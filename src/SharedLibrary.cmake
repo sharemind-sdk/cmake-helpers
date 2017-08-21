@@ -38,11 +38,6 @@ FUNCTION(SharemindAddSharedLibrary name)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
-    # Handle OUTPUT_NAME:
-    IF("${CPA_OUTPUT_NAME}" STREQUAL "")
-        SET(CPA_OUTPUT_NAME "${name}")
-    ENDIF()
-
     # Handle VERSION:
     IF("${CPA_VERSION}" STREQUAL "")
         IF(NOT ("${PROJECT_VERSION}" STREQUAL ""))
@@ -68,9 +63,15 @@ FUNCTION(SharemindAddSharedLibrary name)
 
     ADD_LIBRARY("${name}" SHARED ${CPA_SOURCES})
     SET_TARGET_PROPERTIES("${name}" PROPERTIES
-                          OUTPUT_NAME "${CPA_OUTPUT_NAME}"
                           VERSION "${CPA_VERSION}"
                           SOVERSION "${CPA_SOVERSION}")
+
+    # Handle OUTPUT_NAME:
+    IF(NOT ("${CPA_OUTPUT_NAME}" STREQUAL ""))
+        SET_TARGET_PROPERTIES("${name}" PROPERTIES
+                              OUTPUT_NAME "${CPA_OUTPUT_NAME}")
+    ENDIF()
+
     SharemindTargetSetPropertiesIfNonEmpty("${name}" INCLUDE_DIRECTORIES
                                            ${CPA_INCLUDE_DIRECTORIES})
     SharemindTargetSetPropertiesIfNonEmpty("${name}" COMPILE_DEFINITIONS
