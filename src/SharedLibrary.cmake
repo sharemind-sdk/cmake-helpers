@@ -20,6 +20,8 @@
 IF(NOT DEFINED SharemindSharedLibrary_INCLUDED)
 SET(SharemindSharedLibrary_INCLUDED TRUE)
 
+
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
@@ -34,6 +36,7 @@ FUNCTION(SharemindAddSharedLibrary name)
     SET(opts1 OUTPUT_NAME VERSION SOVERSION)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS LINK_LIBRARIES)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments(CPA)
 
     # Handle OUTPUT_NAME:
     IF("${CPA_OUTPUT_NAME}" STREQUAL "")

@@ -20,6 +20,8 @@
 IF(NOT DEFINED SharemindVersioning_INCLUDED)
 SET(SharemindVersioning_INCLUDED TRUE)
 
+
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
@@ -40,10 +42,7 @@ FUNCTION(SharemindSetProjectVersion)
     SET(opts1 VERSION OUTPUT_VARIABLE)
     SharemindNewList(optsn)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-
-    IF(NOT("${CPA_UNPARSED_ARGUMENTS}" STREQUAL ""))
-        MESSAGE(FATAL_ERROR "Unrecognized arguments: ${CPA_UNPARSED_ARGUMENTS}")
-    ENDIF()
+    SharemindCheckNoUnparsedArguments(CPA)
 
     # Handle VERSION:
     IF("${CPA_VERSION}" STREQUAL "")

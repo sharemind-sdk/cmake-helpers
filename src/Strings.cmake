@@ -20,6 +20,8 @@
 IF(NOT DEFINED SharemindStrings_INCLUDED)
 SET(SharemindStrings_INCLUDED TRUE)
 
+
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindStringHasPrefix str searchPrefix out)
@@ -40,10 +42,7 @@ FUNCTION(SharemindStringStripPrefix str prefix out)
     SharemindNewList(opts1)
     SharemindNewList(optsn)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-
-    IF(NOT("${CPA_UNPARSED_ARGUMENTS}" STREQUAL ""))
-        MESSAGE(FATAL_ERROR "Unrecognized arguments: ${CPA_UNPARSED_ARGUMENTS}")
-    ENDIF()
+    SharemindCheckNoUnparsedArguments(CPA)
 
     SharemindStringHasPrefix("${str}" "${prefix}" hasPrefix)
     IF("${hasPrefix}")

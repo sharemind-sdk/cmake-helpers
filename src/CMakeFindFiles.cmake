@@ -20,8 +20,10 @@
 IF(NOT DEFINED SharemindCMakeFindFiles_INCLUDED)
 SET(SharemindCMakeFindFiles_INCLUDED TRUE)
 
+
 # TODO: Use CMakePackageConfigHelpers instead?
 
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindUseCMakeFindFiles)
@@ -29,10 +31,7 @@ FUNCTION(SharemindUseCMakeFindFiles)
     SET(opts1 PROJECT_NAME COMPONENT)
     SharemindNewList(optsn)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-
-    IF(NOT("${CPA_UNPARSED_ARGUMENTS}" STREQUAL ""))
-        MESSAGE(FATAL_ERROR "Unrecognized arguments: ${CPA_UNPARSED_ARGUMENTS}")
-    ENDIF()
+    SharemindCheckNoUnparsedArguments(CPA)
 
     # Handle PROJECT_NAME:
     IF("${CPA_PROJECT_NAME}" STREQUAL "")

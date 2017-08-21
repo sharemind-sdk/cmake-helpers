@@ -27,5 +27,12 @@ MACRO(SharemindCheckRequiredArgument prefix argname)
     ENDIF()
 ENDMACRO()
 
+MACRO(SharemindCheckNoUnparsedArguments prefix)
+    IF(NOT ("${${prefix}_UNPARSED_ARGUMENTS}" STREQUAL ""))
+        MESSAGE(FATAL_ERROR
+                "Unrecognized arguments: ${${prefix}_UNPARSED_ARGUMENTS}")
+    ENDIF()
+ENDMACRO()
+
 
 ENDIF() # SharemindArguments_INCLUDED
