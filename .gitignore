@@ -1,0 +1,11 @@
+/CMakeLists.txt.user*
+/config.local
+/qtcreator-build/
+/build/
+*.layout
+.directory
+*.marks
+*~
+Makefile
+/xcode-build/
+/b/
