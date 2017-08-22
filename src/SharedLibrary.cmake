@@ -74,11 +74,11 @@ FUNCTION(SharemindAddSharedLibrary name)
     ENDIF()
 
     SharemindTargetSetPropertiesIfNonEmpty("${name}" INCLUDE_DIRECTORIES
-                                           ${CPA_INCLUDE_DIRECTORIES})
+                                           "${CPA_INCLUDE_DIRECTORIES}")
     SharemindTargetSetPropertiesIfNonEmpty("${name}" COMPILE_DEFINITIONS
-                                           ${CPA_COMPILE_DEFINITIONS})
+                                           "${CPA_COMPILE_DEFINITIONS}")
     SharemindTargetSetPropertiesIfNonEmpty("${name}" LINK_LIBRARIES
-                                           ${CPA_LINK_LIBRARIES})
+                                           "${CPA_LINK_LIBRARIES}")
     INSTALL(TARGETS "${name}" LIBRARY DESTINATION "lib" COMPONENT "lib")
 
     # Handle split debug files:
