@@ -21,11 +21,37 @@ IF(NOT DEFINED SharemindTargets_INCLUDED)
 SET(SharemindTargets_INCLUDED TRUE)
 
 
-MACRO(SharemindTargetSetPropertiesIfNonEmpty target property value)
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Definitions.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
+
+MACRO(SharemindTargetSetPropertyIfNonEmpty target property value)
     IF(NOT("${value}" STREQUAL ""))
         SET_TARGET_PROPERTIES("${target}" PROPERTIES "${property}" "${value}")
     ENDIF()
 ENDMACRO()
+
+FUNCTION(SharemindTargetSetCommonProperties target includeDirs compileDefs
+                                            compileFlags linkLibraries oldDefs)
+    SharemindNewList(ids ${includeDirs})
+    SharemindNewList(cfs ${compileFlags})
+    SharemindNewList(cds ${compileDefs})
+    SharemindNewList(lls ${linkLibraries})
+    FOREACH(value IN LISTS oldDefs)
+        SharemindIsDefinition("${value}" isDef)
+        IF("${isDef}")
+            STRING(SUBSTRING "${value}" 2 -1 value)
+            LIST(APPEND cds "${value}")
+        ELSE()
+            LIST(APPEND cfs "${value}")
+        ENDIF()
+    ENDFOREACH()
+    SharemindTargetSetPropertyIfNonEmpty("${target}" INCLUDE_DIRECTORIES
+                                         "${ids}")
+    SharemindTargetSetPropertyIfNonEmpty("${target}" COMPILE_FLAGS "${cfs}")
+    SharemindTargetSetPropertyIfNonEmpty("${target}" COMPILE_DEFINITIONS
+                                         "${cds}")
+    SharemindTargetSetPropertyIfNonEmpty("${target}" LINK_LIBRARIES "${lls}")
+ENDFUNCTION()
 
 
 ENDIF() # SharemindTargets_INCLUDED

@@ -34,7 +34,8 @@ FUNCTION(SharemindAddExecutable name)
 
     SET(flags NO_SPLITDEBUG)
     SET(opts1 OUTPUT_NAME VERSION)
-    SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS LINK_LIBRARIES)
+    SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
+                      LINK_LIBRARIES OLD_DEFINITIONS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
@@ -57,12 +58,12 @@ FUNCTION(SharemindAddExecutable name)
         SET_TARGET_PROPERTIES("${name}" PROPERTIES VERSION "${CPA_VERSION}")
     ENDIF()
 
-    SharemindTargetSetPropertiesIfNonEmpty("${name}" INCLUDE_DIRECTORIES
-                                           "${CPA_INCLUDE_DIRECTORIES}")
-    SharemindTargetSetPropertiesIfNonEmpty("${name}" COMPILE_DEFINITIONS
-                                           "${CPA_COMPILE_DEFINITIONS}")
-    SharemindTargetSetPropertiesIfNonEmpty("${name}" LINK_LIBRARIES
-                                           "${CPA_LINK_LIBRARIES}")
+    SharemindTargetSetCommonProperties("${name}"
+                                       "${CPA_INCLUDE_DIRECTORIES}"
+                                       "${CPA_COMPILE_DEFINITIONS}"
+                                       "${CPA_COMPILE_FLAGS}"
+                                       "${CPA_LINK_LIBRARIES}"
+                                       "${CPA_OLD_DEFINITIONS}")
     INSTALL(TARGETS "${name}" RUNTIME DESTINATION "bin" COMPONENT "bin")
 
     # Handle split debug files:
