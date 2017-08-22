@@ -83,7 +83,7 @@ FUNCTION(SharemindAddComponentPackage component)
     IF("${i}" EQUAL -1)
         MESSAGE(FATAL_ERROR "Component not found: ${component}")
     ENDIF()
-    STRING(TOUPPER "${component}" C)
+    LIST(LENGTH components numComponents)
 
     SharemindNewList(flags)
     SET(opts1 NAME DESCRIPTION
@@ -101,17 +101,28 @@ FUNCTION(SharemindAddComponentPackage component)
             SharemindSetToDefaultIfEmpty(CPA_DEB_DESCRIPTION
                                          "${CPA_DESCRIPTION}")
 
-            SET(CPACK_DEBIAN_${C}_PACKAGE_NAME "${CPA_DEB_NAME}" PARENT_SCOPE)
-            SET(CPACK_COMPONENT_${C}_DESCRIPTION "${CPA_DEB_DESCRIPTION}"
+            IF("${numComponents}" EQUAL 1)
+                SET(V_PACKAGE_NAME "CPACK_DEBIAN_PACKAGE_NAME")
+                SET(V_PACKAGE_DESCRIPTION "CPACK_DEBIAN_PACKAGE_DESCRIPTION")
+                SET(V_PACKAGE_SECTION "CPACK_DEBIAN_PACKAGE_SECTION")
+                SET(V_PACKAGE_DEPENDS "CPACK_DEBIAN_PACKAGE_DEPENDS")
+            ELSE()
+                STRING(TOUPPER "${component}" C)
+                SET(V_PACKAGE_NAME "CPACK_DEBIAN_${C}_PACKAGE_NAME")
+                SET(V_PACKAGE_DESCRIPTION "CPACK_COMPONENT_${C}_DESCRIPTION")
+                SET(V_PACKAGE_SECTION "CPACK_DEBIAN_${C}_PACKAGE_SECTION")
+                SET(V_PACKAGE_DEPENDS "CPACK_DEBIAN_${C}_PACKAGE_DEPENDS")
+            ENDIF()
+
+            SET("${V_PACKAGE_NAME}" "${CPA_DEB_NAME}" PARENT_SCOPE)
+            SET("${V_PACKAGE_DESCRIPTION}" "${CPA_DEB_DESCRIPTION}"
                 PARENT_SCOPE)
             IF(NOT ("${CPA_DEB_DEPENDS}" STREQUAL ""))
                 STRING(REPLACE ";" ", " CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
-                SET(CPACK_DEBIAN_${C}_PACKAGE_DEPENDS "${CPA_DEB_DEPENDS}"
-                    PARENT_SCOPE)
+                SET("${V_PACKAGE_DEPENDS}" "${CPA_DEB_DEPENDS}" PARENT_SCOPE)
             ENDIF()
 
-            SET(CPACK_DEBIAN_${C}_PACKAGE_SECTION "${CPA_DEB_SECTION}"
-                PARENT_SCOPE)
+            SET("${V_PACKAGE_SECTION}" "${CPA_DEB_SECTION}" PARENT_SCOPE)
         ENDIF()
     ENDFOREACH()
 ENDFUNCTION()
