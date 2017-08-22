@@ -112,6 +112,7 @@ FUNCTION(SharemindAddComponentPackage component)
             SET("${V_PACKAGE_DESCRIPTION}" "${CPA_DEB_DESCRIPTION}"
                 PARENT_SCOPE)
             IF(NOT ("${CPA_DEB_DEPENDS}" STREQUAL ""))
+                STRING(REPLACE ";|" " |" CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
                 STRING(REPLACE ";" ", " CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
                 SET("${V_PACKAGE_DEPENDS}" "${CPA_DEB_DEPENDS}" PARENT_SCOPE)
             ENDIF()
