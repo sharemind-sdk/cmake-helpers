@@ -21,9 +21,9 @@ IF(NOT DEFINED SharemindTargets_INCLUDED)
 SET(SharemindTargets_INCLUDED TRUE)
 
 
-MACRO(SharemindTargetSetPropertiesIfNonEmpty target property)
-    IF(NOT("${ARGN}" STREQUAL ""))
-        SET_TARGET_PROPERTIES("${target}" PROPERTIES "${property}" "${ARGN}")
+MACRO(SharemindTargetSetPropertiesIfNonEmpty target property value)
+    IF(NOT("${value}" STREQUAL ""))
+        SET_TARGET_PROPERTIES("${target}" PROPERTIES "${property}" "${value}")
     ENDIF()
 ENDMACRO()
 
