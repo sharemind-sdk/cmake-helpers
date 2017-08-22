@@ -26,7 +26,7 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindSetupPackaging)
-    SET(flags MONOLITHIC)
+    SharemindNewList(flags)
     SET(opts1 VENDOR VENDOR_CONTACT
               DEB_VENDOR_VERSION DEB_VENDOR_PREFIX DEB_COMPRESSION)
     SET(optsn GENERATORS)
@@ -62,13 +62,7 @@ FUNCTION(SharemindSetupPackaging)
             SET(CPACK_DEBIAN_COMPRESSION_TYPE "${CPA_DEB_COMPRESSION}"
                 PARENT_SCOPE)
 
-            # Handle MONOLITHIC:
-            IF(CPA_MONOLITHIC)
-                SET(CPACK_DEB_COMPONENT_INSTALL "OFF" PARENT_SCOPE)
-            ELSE()
-                SET(CPACK_DEB_COMPONENT_INSTALL "ON" PARENT_SCOPE)
-            ENDIF()
-
+            SET(CPACK_DEB_COMPONENT_INSTALL "ON" PARENT_SCOPE)
             SET(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT" PARENT_SCOPE)
         ENDIF()
     ENDFOREACH()

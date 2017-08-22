@@ -24,6 +24,7 @@ SET(SharemindLists_INCLUDED TRUE)
 MACRO(SharemindNewList name)
     SET("${name}" tmp)
     LIST(REMOVE_ITEM "${name}" tmp)
+    LIST(APPEND "${name}" ${ARGN})
 ENDMACRO()
 
 FUNCTION(SharemindListExtractFromHead list)
