@@ -27,6 +27,16 @@ MACRO(SharemindNewList name)
     LIST(APPEND "${name}" ${ARGN})
 ENDMACRO()
 
+MACRO(SharemindNewUniqueList name)
+    SharemindNewList("${name}" ${ARGN})
+    LIST(REMOVE_DUPLICATES "${name}")
+ENDMACRO()
+
+MACRO(SharemindListAppendUnique name)
+    LIST(APPEND "${name}" ${ARGN})
+    LIST(REMOVE_DUPLICATES "${name}")
+ENDMACRO()
+
 FUNCTION(SharemindListExtractFromHead list)
     LIST(LENGTH list l)
     MATH(EXPR n "${ARGC} - 1")
