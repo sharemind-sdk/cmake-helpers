@@ -86,15 +86,7 @@ FUNCTION(SharemindAddSimpleTests_ filenameGlobs)
         SharemindListAppendUnique(filenames "${f}")
     ENDFOREACH()
     FOREACH(test IN LISTS filenames)
-        SharemindAddSimpleTest_("${test}"
-            INCLUDE_DIRECTORIES
-                ${SharemindLibRandom_INCLUDE_DIRS}
-            LEGACY_DEFINITIONS
-                ${SharemindLibRandom_INSTALL_DEFINITIONS}
-            LINK_LIBRARIES
-                ${SharemindLibRandom_LINK_LIBRARIES}
-                "librandom"
-        )
+        SharemindAddSimpleTest_("${test}" "${ARGN}")
     ENDFOREACH()
 ENDFUNCTION()
 MACRO(SharemindAddSimpleTests)
