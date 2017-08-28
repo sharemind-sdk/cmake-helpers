@@ -32,8 +32,7 @@ MACRO(SharemindEnableTests)
     ENDIF()
 ENDMACRO()
 
-FUNCTION(SharemindAddTest name)
-    SharemindEnableTests()
+FUNCTION(SharemindAddTest_ name)
     SharemindNewList(flags)
     SharemindNewList(opts1)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
@@ -56,10 +55,14 @@ FUNCTION(SharemindAddTest name)
                                        "${CPA_LEGACY_DEFINITIONS}")
 
     ADD_DEPENDENCIES("check" "testImpl_${name}")
-    ADD_TEST(NAME "test_${name}" COMMAND "testImpl_${name}")
+    ADD_TEST(NAME "test_${name}" COMMAND "$<TARGET_FILE:testImpl_${name}>")
 ENDFUNCTION()
+MACRO(SharemindAddTest)
+    SharemindEnableTests()
+    SharemindAddTest_(${ARGN})
+ENDMACRO()
 
-FUNCTION(SharemindAddSimpleTest sourceFileName)
+FUNCTION(SharemindAddSimpleTest_ sourceFileName)
     SharemindNewList(flags)
     SharemindNewList(opts1)
     SET(optsn INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
@@ -68,8 +71,12 @@ FUNCTION(SharemindAddSimpleTest sourceFileName)
     SharemindCheckNoUnparsedArguments(CPA)
 
     GET_FILENAME_COMPONENT(testName "${sourceFileName}" NAME_WE)
-    SharemindAddTest("${testName}" SOURCES "${sourceFileName}" ${ARGN})
+    SharemindAddTest_("${testName}" SOURCES "${sourceFileName}" ${ARGN})
 ENDFUNCTION()
+MACRO(SharemindAddSimpleTest)
+    SharemindEnableTests()
+    SharemindAddSimpleTest_(${ARGN})
+ENDMACRO()
 
 
 ENDIF() # SharemindLists_INCLUDED
