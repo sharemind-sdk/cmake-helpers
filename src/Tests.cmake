@@ -22,6 +22,7 @@ SET(SharemindTests_INCLUDED TRUE)
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
 INCLUDE(CMakeParseArguments)
 
@@ -76,6 +77,29 @@ ENDFUNCTION()
 MACRO(SharemindAddSimpleTest)
     SharemindEnableTests()
     SharemindAddSimpleTest_(${ARGN})
+ENDMACRO()
+
+FUNCTION(SharemindAddSimpleTests_ filenameGlobs)
+    SharemindNewList(filenames)
+    FOREACH(g IN LISTS filenameGlobs)
+        FILE(GLOB_RECURSE f "${g}")
+        SharemindListAppendUnique(filenames "${f}")
+    ENDFOREACH()
+    FOREACH(test IN LISTS filenames)
+        SharemindAddSimpleTest_("${test}"
+            INCLUDE_DIRECTORIES
+                ${SharemindLibRandom_INCLUDE_DIRS}
+            LEGACY_DEFINITIONS
+                ${SharemindLibRandom_INSTALL_DEFINITIONS}
+            LINK_LIBRARIES
+                ${SharemindLibRandom_LINK_LIBRARIES}
+                "librandom"
+        )
+    ENDFOREACH()
+ENDFUNCTION()
+MACRO(SharemindAddSimpleTests)
+    SharemindEnableTests()
+    SharemindAddSimpleTests_(${ARGN})
 ENDMACRO()
 
 
