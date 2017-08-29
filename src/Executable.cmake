@@ -33,7 +33,7 @@ FUNCTION(SharemindAddExecutable name)
     ENDIF()
 
     SET(flags NO_SPLITDEBUG)
-    SET(opts1 OUTPUT_NAME VERSION)
+    SET(opts1 OUTPUT_NAME VERSION COMPONENT SPLITDEBUG_COMPONENT)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
                       LINK_LIBRARIES LEGACY_DEFINITIONS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
@@ -64,11 +64,24 @@ FUNCTION(SharemindAddExecutable name)
                                        "${CPA_COMPILE_FLAGS}"
                                        "${CPA_LINK_LIBRARIES}"
                                        "${CPA_LEGACY_DEFINITIONS}")
-    INSTALL(TARGETS "${name}" RUNTIME DESTINATION "bin" COMPONENT "bin")
+
+    # Handle COMPONENT:
+    IF("${CPA_COMPONENT}" STREQUAL "")
+        SET(CPA_COMPONENT "bin")
+    ENDIF()
+    INSTALL(TARGETS "${name}"
+            RUNTIME DESTINATION "bin"
+            COMPONENT "${CPA_COMPONENT}")
 
     # Handle split debug files:
     IF(NOT "${CPA_NO_SPLITDEBUG}")
-        SharemindExecutableAddSplitDebug("${name}")
+        # Handle SPLITDEBUG_COMPONENT:
+        IF("${CPA_SPLITDEBUG_COMPONENT}" STREQUAL "")
+            SET(CPA_SPLITDEBUG_COMPONENT "debug")
+        ENDIF()
+        SharemindExecutableAddSplitDebug("${name}"
+            COMPONENT "${CPA_SPLITDEBUG_COMPONENT}"
+        )
     ENDIF()
 ENDFUNCTION()
 
