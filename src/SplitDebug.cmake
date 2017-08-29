@@ -21,7 +21,16 @@ IF(NOT DEFINED SharemindSplitDebug_INCLUDED)
 SET(SharemindSplitDebug_INCLUDED TRUE)
 
 
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
+INCLUDE(CMakeParseArguments)
+
 FUNCTION(SharemindSplitDebug_ targetName destination)
+    SharemindNewList(flags)
+    SET(opts1 COMPONENT)
+    SharemindNewList(optsn)
+    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments(CPA)
+
     IF(NOT TARGET "${targetName}")
         MESSAGE(FATAL_ERROR "No such target: ${targetName}")
     ENDIF()
@@ -43,9 +52,12 @@ FUNCTION(SharemindSplitDebug_ targetName destination)
                 "--add-gnu-debuglink=$<TARGET_FILE:${targetName}>.debug"
                 "$<TARGET_FILE:${targetName}>"
     )
+    IF("${CPA_COMPONENT}" STREQUAL "")
+        SET(CPA_COMPONENT "debug")
+    ENDIF()
     INSTALL(FILES "$<TARGET_FILE:${targetName}>.debug"
             DESTINATION "${destination}"
-            COMPONENT "debug")
+            COMPONENT "${CPA_COMPONENT}")
 ENDFUNCTION()
 
 FUNCTION(SharemindLibraryAddSplitDebug targetName)
