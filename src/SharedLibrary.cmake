@@ -33,7 +33,7 @@ FUNCTION(SharemindAddSharedLibrary name)
         MESSAGE(FATAL_ERROR "Empty name given!")
     ENDIF()
 
-    SET(flags NO_SPLITDEBUG)
+    SET(flags NO_SPLITDEBUG MODULE)
     SET(opts1 OUTPUT_NAME VERSION SOVERSION)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
                       LINK_LIBRARIES LEGACY_DEFINITIONS)
@@ -63,7 +63,13 @@ FUNCTION(SharemindAddSharedLibrary name)
         MESSAGE(FATAL_ERROR "No valid SOURCES given!")
     ENDIF()
 
-    ADD_LIBRARY("${name}" SHARED ${CPA_SOURCES})
+    IF("${CPA_MODULE}")
+        SET(type MODULE)
+    ELSE()
+        SET(type SHARED)
+    ENDIF()
+
+    ADD_LIBRARY("${name}" "${type}" ${CPA_SOURCES})
     SET_TARGET_PROPERTIES("${name}" PROPERTIES
                           VERSION "${CPA_VERSION}"
                           SOVERSION "${CPA_SOVERSION}")
