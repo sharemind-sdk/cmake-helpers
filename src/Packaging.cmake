@@ -85,6 +85,7 @@ FUNCTION(SharemindAddComponentPackage component)
               DEB_NAME DEB_DESCRIPTION DEB_SECTION)
     SET(optsn DEB_DEPENDS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments(CPA)
 
     SharemindSetToDefaultIfEmpty(CPA_NAME "${component}")
     SharemindSetToDefaultIfEmpty(CPA_DESCRIPTION "${CPA_NAME} package")
