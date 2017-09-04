@@ -33,5 +33,11 @@ MACRO(SharemindSetToDefaultIfEmpty varname)
     ENDIF()
 ENDMACRO()
 
+MACRO(SharemindRegisteredSet registryName varName)
+    LIST(APPEND "${registryName}" "${varName}")
+    LIST(REMOVE_DUPLICATES "${registryName}")
+    SET("${varName}" ${ARGN})
+ENDMACRO()
+
 
 ENDIF() # SharemindVariable_INCLUDED
