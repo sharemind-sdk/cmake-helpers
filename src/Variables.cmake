@@ -39,5 +39,11 @@ MACRO(SharemindRegisteredSet registryName varName)
     SET("${varName}" ${ARGN})
 ENDMACRO()
 
+MACRO(SharemindElevateRegisteredVariables)
+    FOREACH(varName IN ITEMS ${ARGN})
+        SET("${varName}" ${${varName}} PARENT_SCOPE)
+    ENDFOREACH()
+ENDMACRO()
+
 
 ENDIF() # SharemindVariable_INCLUDED
