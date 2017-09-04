@@ -69,7 +69,7 @@ FUNCTION(SharemindSetupPackaging)
     ENDFOREACH()
 ENDFUNCTION()
 
-FUNCTION(SharemindAddComponentPackage component)
+FUNCTION(SharemindAddComponentPackage_ component)
     IF("${component}" STREQUAL "")
         MESSAGE(FATAL_ERROR "Invalid component name given: ${component}")
     ENDIF()
@@ -82,13 +82,15 @@ FUNCTION(SharemindAddComponentPackage component)
 
     SharemindNewList(flags)
     SET(opts1 NAME DESCRIPTION
-              DEB_NAME DEB_DESCRIPTION DEB_SECTION)
+              DEB_NAME DEB_DESCRIPTION DEB_SECTION OUTPUT_VAR_REGISTRY)
     SET(optsn DEB_DEPENDS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
     SharemindSetToDefaultIfEmpty(CPA_NAME "${component}")
     SharemindSetToDefaultIfEmpty(CPA_DESCRIPTION "${CPA_NAME} package")
+
+    SharemindNewList(varRegistry)
 
     FOREACH(generator IN LISTS CPACK_GENERATOR)
         IF("${generator}" STREQUAL "DEB")
@@ -110,9 +112,10 @@ FUNCTION(SharemindAddComponentPackage component)
                 SET(V_PACKAGE_DEPENDS "CPACK_DEBIAN_${C}_PACKAGE_DEPENDS")
             ENDIF()
 
-            SET("${V_PACKAGE_NAME}" "${CPA_DEB_NAME}" PARENT_SCOPE)
-            SET("${V_PACKAGE_DESCRIPTION}" "${CPA_DEB_DESCRIPTION}"
-                PARENT_SCOPE)
+            SharemindRegisteredSet(varRegistry
+                "${V_PACKAGE_NAME}" "${CPA_DEB_NAME}")
+            SharemindRegisteredSet(varRegistry
+                "${V_PACKAGE_DESCRIPTION}" "${CPA_DEB_DESCRIPTION}")
             IF(NOT ("${CPA_DEB_DEPENDS}" STREQUAL ""))
                 SET(DEB_DEPENDS "")
                 FOREACH(d IN LISTS CPA_DEB_DEPENDS)
@@ -136,13 +139,37 @@ FUNCTION(SharemindAddComponentPackage component)
                 ENDFOREACH()
                 STRING(REPLACE ";|" " |" CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
                 STRING(REPLACE ";" ", " CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
-                SET("${V_PACKAGE_DEPENDS}" "${DEB_DEPENDS}" PARENT_SCOPE)
+                SharemindRegisteredSet(varRegistry
+                    "${V_PACKAGE_DEPENDS}" "${DEB_DEPENDS}")
             ENDIF()
 
-            SET("${V_PACKAGE_SECTION}" "${CPA_DEB_SECTION}" PARENT_SCOPE)
+            SharemindRegisteredSet(varRegistry
+                "${V_PACKAGE_SECTION}" "${CPA_DEB_SECTION}")
         ENDIF()
     ENDFOREACH()
+    SharemindElevateRegisteredVariables(${varRegistry})
+    IF(NOT ("${CPA_OUTPUT_VAR_REGISTRY}" STREQUAL ""))
+        SET("${CPA_OUTPUT_VAR_REGISTRY}" ${varRegistry} PARENT_SCOPE)
+    ENDIF()
 ENDFUNCTION()
+MACRO(SharemindAddComponentPackage component)
+    CMAKE_PARSE_ARGUMENTS(SharemindAddComponentPackage_tmp_CPA
+        "PARENT_SCOPE" "" "" ${ARGN})
+    IF(SharemindAddComponentPackage_tmp_CPA_PARENT_SCOPE)
+        UNSET(SharemindAddComponentPackage_tmp_CPA_PARENT_SCOPE)
+        SharemindAddComponentPackage_("${component}"
+            OUTPUT_VAR_REGISTRY SharemindAddComponentPackage_tmp_vars
+            ${SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS})
+        SharemindElevateRegisteredVariables(
+            ${SharemindAddComponentPackage_tmp_vars})
+        UNSET(SharemindAddComponentPackage_tmp_vars)
+    ELSE()
+        UNSET(SharemindAddComponentPackage_tmp_CPA_PARENT_SCOPE)
+        SharemindAddComponentPackage_("${component}"
+            ${SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS})
+    ENDIF()
+    UNSET(SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS)
+ENDMACRO()
 
 MACRO(SharemindPackagingFinalize)
     INCLUDE(CPack)
