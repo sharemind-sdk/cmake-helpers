@@ -88,6 +88,9 @@ FUNCTION(SharemindCreateCMakeFindFiles)
         SET(CPA_VERSION "${PROJECT_VERSION}")
     ENDIF()
 
+    LIST(REMOVE_DUPLICATES CPA_INCLUDE_DIRS)
+    LIST(REMOVE_DUPLICATES CPA_LIBRARIES)
+
     CONFIGURE_FILE(
         "${SharemindCMakeHelpersDir}/FindFileConfig.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}Config.cmake" @ONLY)
