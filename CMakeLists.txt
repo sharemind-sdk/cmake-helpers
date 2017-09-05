@@ -35,7 +35,10 @@ SET(SCRIPTDIR "cmake-scripts")
 SET(SCRIPTROOT "lib/${CMAKE_PROJECT_NAME}/${SCRIPTDIR}")
 SET(FULL_SCRIPTROOT "${CMAKE_INSTALL_PREFIX}/${SCRIPTROOT}")
 
-FILE(GLOB_RECURSE SharemindCMakeHelpers_SOURCES "${SRCDIR}/*.cmake")
+FILE(GLOB_RECURSE SharemindCMakeHelpers_SOURCES
+    "${SRCDIR}/*.cmake"
+    "${SRCDIR}/*.in"
+)
 INSTALL(FILES ${SharemindCMakeHelpers_SOURCES} DESTINATION "${SCRIPTROOT}")
 ADD_CUSTOM_TARGET("include_SharemindCMakeHelpers_SOURCES_in_IDE"
                   SOURCES ${SharemindCMakeHelpers_SOURCES})
