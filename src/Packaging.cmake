@@ -69,25 +69,28 @@ FUNCTION(SharemindSetupPackaging)
     ENDFOREACH()
 ENDFUNCTION()
 
-FUNCTION(SharemindPackageInstallEmptyDirectory dir)
+FUNCTION(SharemindPackageInstallEmptyDirectories)
     SharemindNewList(flags)
     SET(opts1 COMPONENT)
-    SharemindNewList(optsn)
+    SET(optsn DIRECTORIES)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
-    GET_FILENAME_COMPONENT(name "${dir}" NAME)
-    GET_FILENAME_COMPONENT(dir "${dir}" DIRECTORY)
-    FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}")
-    IF("${CPA_COMPONENT}" STREQUAL "")
-        INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}"
-                DESTINATION "${dir}"
-                EXCLUDE_FROM_ALL)
-    ELSE()
-        INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}"
-                DESTINATION "${dir}"
-                EXCLUDE_FROM_ALL
-                COMPONENT "${CPA_COMPONENT}")
-    ENDIF()
+
+    FOREACH(dir IN LISTS CPA_DIRECTORIES)
+        GET_FILENAME_COMPONENT(name "${dir}" NAME)
+        GET_FILENAME_COMPONENT(dir "${dir}" DIRECTORY)
+        FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}")
+        IF("${CPA_COMPONENT}" STREQUAL "")
+            INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}"
+                    DESTINATION "${dir}"
+                    EXCLUDE_FROM_ALL)
+        ELSE()
+            INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}"
+                    DESTINATION "${dir}"
+                    EXCLUDE_FROM_ALL
+                    COMPONENT "${CPA_COMPONENT}")
+        ENDIF()
+    ENDFOREACH()
 ENDFUNCTION()
 
 FUNCTION(SharemindAddComponentPackage_ component)
