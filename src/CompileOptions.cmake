@@ -89,6 +89,10 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-Wno-packed"
     "-Wno-padded"
     "-Wpointer-arith"
+    "-Werror=format"
+    "-Werror=format-signedness"
+    "-Werror=register"
+    "-Werror=alloca"
 )
 SharemindNewUniqueList(SharemindC99CheckCompileOptions
     ${SharemindCheckCompileOptions}
@@ -116,10 +120,6 @@ SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
     "-Wsuggest-override"
     "-Wzero-as-null-pointer-constant"
     "-Werror=terminate"
-    "-Werror=format"
-    "-Werror=format-signedness"
-    "-Werror=register"
-    "-Werror=alloca"
 )
 
 FUNCTION(SharemindSetCompileOptions compiler standard)
