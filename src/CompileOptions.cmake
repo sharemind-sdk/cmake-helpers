@@ -106,6 +106,7 @@ SharemindNewUniqueList(SharemindC99CheckCompileOptions
 )
 SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
     ${SharemindCheckCompileOptions}
+    "-faligned-new"
     "-Wno-c++98-compat"
     "-Wno-c++98-compat-pedantic"
     "-Wno-covered-switch-default"
@@ -114,6 +115,11 @@ SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
     "-Wno-weak-vtables"
     "-Wsuggest-override"
     "-Wzero-as-null-pointer-constant"
+    "-Werror=terminate"
+    "-Werror=format"
+    "-Werror=format-signedness"
+    "-Werror=register"
+    "-Werror=alloca"
 )
 
 FUNCTION(SharemindSetCompileOptions compiler standard)
