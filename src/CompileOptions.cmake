@@ -111,6 +111,7 @@ SharemindNewUniqueList(SharemindC99CheckCompileOptions
 SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
     ${SharemindCheckCompileOptions}
     "-faligned-new"
+    "-fdefine-sized-deallocation"
     "-Wno-c++98-compat"
     "-Wno-c++98-compat-pedantic"
     "-Wno-covered-switch-default"
