@@ -73,6 +73,8 @@ SharemindNewUniqueList(SharemindForcedCompileDefinitions
     "__STDC_CONSTANT_MACROS"
     "__STDC_FORMAT_MACROS"
     "__STDC_LIMIT_MACROS"
+    "_POSIX_C_SOURCE=200809L"
+    "_XOPEN_SOURCE=700"
 )
 SharemindNewUniqueList(SharemindC99ForcedCompileDefinitions
     ${SharemindForcedCompileDefinitions}
