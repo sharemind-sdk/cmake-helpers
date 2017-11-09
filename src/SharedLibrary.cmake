@@ -36,7 +36,7 @@ FUNCTION(SharemindAddSharedLibrary name)
     SET(flags NO_SPLITDEBUG MODULE)
     SET(opts1 OUTPUT_NAME VERSION SOVERSION COMPONENT SPLITDEBUG_COMPONENT)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
-                      LINK_LIBRARIES LEGACY_DEFINITIONS)
+                      LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
@@ -85,6 +85,7 @@ FUNCTION(SharemindAddSharedLibrary name)
                                        "${CPA_COMPILE_DEFINITIONS}"
                                        "${CPA_COMPILE_FLAGS}"
                                        "${CPA_LINK_LIBRARIES}"
+                                       "${CPA_LINK_FLAGS}"
                                        "${CPA_LEGACY_DEFINITIONS}")
 
     # Handle COMPONENT:

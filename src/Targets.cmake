@@ -31,11 +31,13 @@ MACRO(SharemindTargetSetPropertyIfNonEmpty target property value)
 ENDMACRO()
 
 FUNCTION(SharemindTargetSetCommonProperties target includeDirs compileDefs
-                                            compileFlags linkLibraries oldDefs)
+                                            compileFlags linkLibraries linkFlags
+                                            oldDefs)
     SharemindNewUniqueList(ids ${includeDirs})
     SharemindNewUniqueList(cfs ${compileFlags})
     SharemindNewUniqueList(cds ${compileDefs})
     SharemindNewUniqueList(lls ${linkLibraries})
+    SharemindNewUniqueList(lfs ${linkFlags})
     FOREACH(value IN LISTS oldDefs)
         SharemindIsDefinition("${value}" isDef)
         IF("${isDef}")
@@ -51,6 +53,7 @@ FUNCTION(SharemindTargetSetCommonProperties target includeDirs compileDefs
     SharemindTargetSetPropertyIfNonEmpty("${target}" COMPILE_DEFINITIONS
                                          "${cds}")
     SharemindTargetSetPropertyIfNonEmpty("${target}" LINK_LIBRARIES "${lls}")
+    SharemindTargetSetPropertyIfNonEmpty("${target}" LINK_FLAGS "${lfs}")
 ENDFUNCTION()
 
 

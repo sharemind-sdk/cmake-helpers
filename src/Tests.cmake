@@ -37,7 +37,7 @@ FUNCTION(SharemindAddTest_ name)
     SharemindNewList(flags)
     SharemindNewList(opts1)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
-                      LINK_LIBRARIES LEGACY_DEFINITIONS)
+                      LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
@@ -53,6 +53,7 @@ FUNCTION(SharemindAddTest_ name)
                                        "${CPA_COMPILE_DEFINITIONS}"
                                        "${CPA_COMPILE_FLAGS}"
                                        "${CPA_LINK_LIBRARIES}"
+                                       "${CPA_LINK_FLAGS}"
                                        "${CPA_LEGACY_DEFINITIONS}")
 
     ADD_DEPENDENCIES("check" "testImpl_${name}")
@@ -67,7 +68,7 @@ FUNCTION(SharemindAddSimpleTest_ sourceFileName)
     SharemindNewList(flags)
     SharemindNewList(opts1)
     SET(optsn INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
-              LINK_LIBRARIES LEGACY_DEFINITIONS)
+              LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
