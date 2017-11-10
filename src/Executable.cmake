@@ -44,6 +44,7 @@ FUNCTION(SharemindAddExecutable name)
         MESSAGE(FATAL_ERROR "No valid SOURCES given!")
     ENDIF()
 
+    SharemindListMaybeSortByFileSize("${CPA_SOURCES}" CPA_SOURCES)
     ADD_EXECUTABLE("${name}" ${CPA_SOURCES})
 
     # Handle OUTPUT_NAME:

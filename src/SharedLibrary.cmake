@@ -69,6 +69,7 @@ FUNCTION(SharemindAddSharedLibrary name)
         SET(type SHARED)
     ENDIF()
 
+    SharemindListMaybeSortByFileSize("${CPA_SOURCES}" CPA_SOURCES)
     ADD_LIBRARY("${name}" "${type}" ${CPA_SOURCES})
     SET_TARGET_PROPERTIES("${name}" PROPERTIES
                           VERSION "${CPA_VERSION}"

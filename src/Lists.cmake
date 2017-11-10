@@ -21,6 +21,8 @@ IF(NOT DEFINED SharemindLists_INCLUDED)
 SET(SharemindLists_INCLUDED TRUE)
 
 
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Strings.cmake")
+
 MACRO(SharemindNewList name)
     SET("${name}" tmp)
     LIST(REMOVE_ITEM "${name}" tmp)
@@ -51,5 +53,55 @@ FUNCTION(SharemindListExtractFromHead list)
     ENDFOREACH()
 ENDFUNCTION()
 
+# Sorts the given files based on size (largest first) to slightly optimize the
+# build times for multi-core setups to keep all cores as busy as possible. Note
+# that this optimization is rather fragile because it depends on how CMake and
+# make handle work queues internally.
+FUNCTION(SharemindListMaybeSortByFileSize list out)
+    FIND_PROGRAM(WC NAMES wc)
+    IF(WC)
+        SET(l tmp)
+        LIST(REMOVE_ITEM l tmp)
+        SET(r 0) # result variable
+        SET(m 0) # max size
+        FOREACH(f IN LISTS list)
+            EXECUTE_PROCESS(
+                COMMAND "${WC}" -c "${f}"
+                OUTPUT_VARIABLE o
+                RESULT_VARIABLE r)
+            IF(r)
+                BREAK()
+            ENDIF()
+            STRING(REGEX MATCH "^(0|[1-9][0-9]*) " s "${o}")
+            STRING(STRIP "${s}" s)
+            IF("${s}" GREATER "${m}")
+                SET(m "${s}")
+            ENDIF()
+            LIST(APPEND l "${o}")
+        ENDFOREACH()
+        IF(NOT r)
+            STRING(LENGTH "${m}" n)
+            SET(t tmp)
+            LIST(REMOVE_ITEM t tmp)
+            FOREACH(i IN LISTS l)
+                STRING(REGEX REPLACE "^(0|[1-9][0-9]*) " "${m} " s "${i}")
+                SharemindPadTo("${i}" "0" "${s}" i)
+                LIST(APPEND t "${i}")
+            ENDFOREACH()
+            SET(l tmp)
+            LIST(REMOVE_ITEM l tmp)
+            LIST(SORT t)
+            LIST(REVERSE t)
+            FOREACH(i IN LISTS t)
+                STRING(REGEX REPLACE "^[0-9]+ +" "" i "${i}")
+                STRING(STRIP "${i}" i)
+                LIST(APPEND l "${i}")
+            ENDFOREACH()
+            SET("${out}" ${l} PARENT_SCOPE)
+        ENDIF()
+    ELSE()
+        SET("${out}" "${list}" PARENT_SCOPE)
+    ENDIF()
+ENDFUNCTION()
 
 ENDIF() # SharemindLists_INCLUDED
