@@ -42,6 +42,7 @@ FUNCTION(SharemindSplitDebug_ targetName destination)
     ENDIF()
     ADD_CUSTOM_COMMAND(TARGET "${targetName}" POST_BUILD
         COMMAND "${objcopy}" "--compress-debug-sections"
+                             "--only-keep-debug"
                              "$<TARGET_FILE:${targetName}>"
                              "$<TARGET_FILE:${targetName}>.debug"
         COMMAND "${objcopy}"
@@ -61,11 +62,11 @@ FUNCTION(SharemindSplitDebug_ targetName destination)
 ENDFUNCTION()
 
 FUNCTION(SharemindLibraryAddSplitDebug targetName)
-    SharemindSplitDebug_("${targetName}" "lib/debug/usr/lib" ${ARGN})
+    SharemindSplitDebug_("${targetName}" "lib" ${ARGN})
 ENDFUNCTION()
 
 FUNCTION(SharemindExecutableAddSplitDebug targetName)
-    SharemindSplitDebug_("${targetName}" "lib/debug/usr/bin" ${ARGN})
+    SharemindSplitDebug_("${targetName}" "bin" ${ARGN})
 ENDFUNCTION()
 
 
