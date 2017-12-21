@@ -81,6 +81,10 @@ FUNCTION(SharemindAddSharedLibrary name)
                               OUTPUT_NAME "${CPA_OUTPUT_NAME}")
     ENDIF()
 
+    SharemindListAppendUnique(CPA_LINK_FLAGS "-Wl,--as-needed"
+                                             "-Wl,--no-undefined"
+                                             "-Wl,--no-allow-shlib-undefined")
+
     SharemindTargetSetCommonProperties("${name}"
                                        "${CPA_INCLUDE_DIRECTORIES}"
                                        "${CPA_COMPILE_DEFINITIONS}"

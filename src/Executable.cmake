@@ -22,6 +22,7 @@ SET(SharemindExecutable_INCLUDED TRUE)
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/SplitDebug.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
@@ -58,6 +59,10 @@ FUNCTION(SharemindAddExecutable name)
         SharemindCheckNumericVersionSyntax("${CPA_VERSION}")
         SET_TARGET_PROPERTIES("${name}" PROPERTIES VERSION "${CPA_VERSION}")
     ENDIF()
+
+    SharemindListAppendUnique(CPA_LINK_FLAGS "-Wl,--as-needed"
+                                             "-Wl,--no-undefined"
+                                             "-Wl,--no-allow-shlib-undefined")
 
     SharemindTargetSetCommonProperties("${name}"
                                        "${CPA_INCLUDE_DIRECTORIES}"
