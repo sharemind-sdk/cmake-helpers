@@ -89,7 +89,7 @@ FUNCTION(SharemindCreateCMakeFindFiles)
     ENDIF()
 
     SharemindNewUniqueList(CPA_INCLUDE_DIRS ${CPA_INCLUDE_DIRS})
-    SharemindNewUniqueList(CPA_LIBRARIES ${CPA_LIBRARIES})
+    SharemindNewUniqueList(CPA_LIBRARIES "-Wl,--as-needed" ${CPA_LIBRARIES})
     SharemindNewUniqueList(CPA_DEFINITIONS ${CPA_DEFINITIONS})
 
     CONFIGURE_FILE(
