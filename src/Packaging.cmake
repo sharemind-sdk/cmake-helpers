@@ -54,9 +54,11 @@ FUNCTION(SharemindSetupPackaging)
             # Handle DEB_VENDOR_PREFIX and DEB_VENDOR_VERSION:
             SharemindSetToDefaultIfEmpty(CPA_DEB_VENDOR_PREFIX "cyber")
             SharemindSetToDefaultIfEmpty(CPA_DEB_VENDOR_VERSION "1")
+            SET(s "$ENV{SHAREMIND_CPACK_DEB_VENDOR_VERSION_SUFFIX}")
             SET(CPACK_DEBIAN_PACKAGE_RELEASE
-                "${CPA_DEB_VENDOR_PREFIX}${CPA_DEB_VENDOR_VERSION}"
+                "${CPA_DEB_VENDOR_PREFIX}${CPA_DEB_VENDOR_VERSION}${s}"
                 PARENT_SCOPE)
+            UNSET(s)
 
             # Handle DEB_COMPRESSION:
             SharemindSetToDefaultIfEmpty(CPA_DEB_COMPRESSION "xz")
