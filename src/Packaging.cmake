@@ -109,12 +109,19 @@ FUNCTION(SharemindAddComponentPackage_ component)
     SharemindNewList(flags)
     SET(opts1 NAME DESCRIPTION
               DEB_NAME DEB_DESCRIPTION DEB_SECTION OUTPUT_VAR_REGISTRY)
-    SET(optsn DEB_DEPENDS)
+    SET(optsn DEB_DEPENDS DEB_EXTRA_CONTROL_FILES)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
     SharemindSetToDefaultIfEmpty(CPA_NAME "${component}")
     SharemindSetToDefaultIfEmpty(CPA_DESCRIPTION "${CPA_NAME} package")
+
+    FOREACH(e IN LISTS CPA_DEB_EXTRA_CONTROL_FILES)
+        IF(NOT (EXISTS "${e}"))
+            MESSAGE(FATAL_ERROR
+                    "\"${e}\" given in DEB_EXTRA_CONTROL_FILES does not exist!")
+        ENDIF()
+    ENDFOREACH()
 
     SharemindNewList(varRegistry)
 
@@ -130,12 +137,14 @@ FUNCTION(SharemindAddComponentPackage_ component)
                 SET(V_PACKAGE_DESCRIPTION "CPACK_DEBIAN_PACKAGE_DESCRIPTION")
                 SET(V_PACKAGE_SECTION "CPACK_DEBIAN_PACKAGE_SECTION")
                 SET(V_PACKAGE_DEPENDS "CPACK_DEBIAN_PACKAGE_DEPENDS")
+                SET(V_PACKAGE_EXTRA "CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA")
             ELSE()
                 STRING(TOUPPER "${component}" C)
                 SET(V_PACKAGE_NAME "CPACK_DEBIAN_${C}_PACKAGE_NAME")
                 SET(V_PACKAGE_DESCRIPTION "CPACK_COMPONENT_${C}_DESCRIPTION")
                 SET(V_PACKAGE_SECTION "CPACK_DEBIAN_${C}_PACKAGE_SECTION")
                 SET(V_PACKAGE_DEPENDS "CPACK_DEBIAN_${C}_PACKAGE_DEPENDS")
+                SET(V_PACKAGE_EXTRA "CPACK_DEBIAN_${C}_PACKAGE_CONTROL_EXTRA")
             ENDIF()
 
             SharemindRegisteredSet(varRegistry
@@ -167,6 +176,11 @@ FUNCTION(SharemindAddComponentPackage_ component)
                 STRING(REPLACE ";" ", " CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
                 SharemindRegisteredSet(varRegistry
                     "${V_PACKAGE_DEPENDS}" "${DEB_DEPENDS}")
+            ENDIF()
+
+            IF(NOT ("${CPA_DEB_EXTRA_CONTROL_FILES}" STREQUAL ""))
+                SharemindRegisteredSet(varRegistry
+                    "${V_PACKAGE_EXTRA}" "${CPA_DEB_EXTRA_CONTROL_FILES}")
             ENDIF()
 
             SharemindRegisteredSet(varRegistry
