@@ -94,6 +94,7 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-Wfloat-equal"
     "-Wformat"
     "-Wlogical-op"
+    "-Wno-documentation-unknown-command"
     "-Wno-packed"
     "-Wno-padded"
     "-Wpointer-arith"
