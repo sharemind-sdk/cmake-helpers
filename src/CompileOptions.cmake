@@ -104,6 +104,7 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-Werror=register"
     "-Werror=alloca"
     "-Werror=gnu-zero-variadic-macro-arguments"
+    "-Werror=null-pointer-arithmetic"
 )
 SharemindNewUniqueList(SharemindC99CheckCompileOptions
     ${SharemindCheckCompileOptions}
