@@ -103,6 +103,7 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-Werror=format-signedness"
     "-Werror=register"
     "-Werror=alloca"
+    "-Werror=gnu-zero-variadic-macro-arguments"
 )
 SharemindNewUniqueList(SharemindC99CheckCompileOptions
     ${SharemindCheckCompileOptions}
