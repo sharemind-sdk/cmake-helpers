@@ -100,6 +100,7 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-Wno-global-constructors"
     "-Wno-packed"
     "-Wno-padded"
+    "-Wno-switch-enum"
     "-Wpointer-arith"
     "-Werror=format"
     "-Werror=format-signedness"
