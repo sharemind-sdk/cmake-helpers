@@ -110,6 +110,7 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-Werror=null-pointer-arithmetic"
     "-Werror=extra-semi"
     "-Werror=embedded-directive"
+    "-Werror=unused-result"
 )
 SharemindNewUniqueList(SharemindC99CheckCompileOptions
     ${SharemindCheckCompileOptions}
