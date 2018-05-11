@@ -85,11 +85,11 @@ SharemindNewUniqueList(SharemindCxx11ForcedCompileDefinitions
 
 SharemindNewUniqueList(SharemindCheckCompileOptions
     "-fasynchronous-unwind-tables"
+    "-fcf-protection=full"
     "-fexceptions"
     "-fstack-clash-protection"
     "-fstack-protector-strong"
     "-mcet"
-    "-fcf-protection"
     "-Weverything"
     "-Wfloat-equal"
     "-Wformat"
