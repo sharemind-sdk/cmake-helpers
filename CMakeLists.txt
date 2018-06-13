@@ -25,6 +25,7 @@ SET(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 INCLUDE("${SRCDIR}/CMakeFindFiles.cmake")
 INCLUDE("${SRCDIR}/Lists.cmake")
 INCLUDE("${SRCDIR}/Strings.cmake")
+INCLUDE("${SRCDIR}/Packaging.cmake")
 INCLUDE("${SRCDIR}/UserConfig.cmake")
 INCLUDE("${SRCDIR}/Versioning.cmake")
 
@@ -39,7 +40,8 @@ FILE(GLOB_RECURSE SharemindCMakeHelpers_SOURCES
     "${SRCDIR}/*.cmake"
     "${SRCDIR}/*.in"
 )
-INSTALL(FILES ${SharemindCMakeHelpers_SOURCES} DESTINATION "${SCRIPTROOT}")
+INSTALL(FILES ${SharemindCMakeHelpers_SOURCES} DESTINATION "${SCRIPTROOT}"
+        COMPONENT "dev")
 ADD_CUSTOM_TARGET("include_SharemindCMakeHelpers_SOURCES_in_IDE"
                   SOURCES ${SharemindCMakeHelpers_SOURCES})
 
@@ -49,6 +51,15 @@ FOREACH(s IN LISTS SharemindCMakeHelpers_SOURCES)
     SharemindStringStripPrefix("${s}" "${SRCDIR}/" s)
     FILE(APPEND "${everything}" "INCLUDE(\"${FULL_SCRIPTROOT}/${s}\")\n")
 ENDFOREACH()
-INSTALL(FILES "${everything}" DESTINATION "lib/SharemindCMakeHelpers")
+INSTALL(FILES "${everything}" DESTINATION "lib/SharemindCMakeHelpers"
+        COMPONENT "dev")
 
 SharemindUseCMakeFindFiles()
+
+SharemindSetupPackaging()
+SharemindAddComponentPackage("dev"
+    NAME "sharemind-cmake-helpers"
+    DESCRIPTION "Sharemind CMake Helpers"
+    DEB_SECTION "libs"
+)
+SharemindPackagingFinalize()
