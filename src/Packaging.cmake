@@ -209,6 +209,13 @@ MACRO(SharemindAddComponentPackage component)
             ${SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS})
     ENDIF()
     UNSET(SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS)
+
+    # CPACK_DEBIAN_PACKAGE_RELEASE is set by SharemindSetupPackaging
+    # Currently component-specific versioning is not supported
+    SET("${CMAKE_PROJECT_NAME}_DEB_${component}_PACKAGE_VERSION"
+        "${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}"
+    )
+
 ENDMACRO()
 
 MACRO(SharemindPackagingFinalize)
