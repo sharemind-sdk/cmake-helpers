@@ -216,6 +216,16 @@ MACRO(SharemindAddComponentPackage component)
         "${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}"
     )
 
+    # set PACKAGE_VERSION in the parent scope as well
+    # this is needed when multiple directories are used
+    GET_DIRECTORY_PROPERTY(HASPARENT PARENT_DIRECTORY)
+    IF(HASPARENT)
+        SET("${CMAKE_PROJECT_NAME}_DEB_${component}_PACKAGE_VERSION"
+            "${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}"
+            PARENT_SCOPE
+        )
+    ENDIF()
+
 ENDMACRO()
 
 MACRO(SharemindPackagingFinalize)
