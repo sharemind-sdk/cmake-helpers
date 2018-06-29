@@ -34,6 +34,13 @@ FUNCTION(SharemindSetupPackaging)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
+    # Initialize an empty CPACK_COMPONENTS_ALL, so that by default, no packages
+    # are generated.
+    SET(CPACK_COMPONENTS_ALL PARENT_SCOPE)
+
+    # The list of components ignored by packaging:
+    SET(SHAREMIND_PACKAGING_IGNORED_COMPONENTS PARENT_SCOPE)
+
     # Handle VENDOR:
     SharemindSetToDefaultIfEmpty(CPA_VENDOR "Cybernetica AS")
     SET(CPACK_PACKAGE_VENDOR "${CPA_VENDOR}" PARENT_SCOPE)
@@ -91,6 +98,21 @@ FUNCTION(SharemindPackageInstallEmptyDirectories)
                     DESTINATION "${dir}"
                     EXCLUDE_FROM_ALL
                     COMPONENT "${CPA_COMPONENT}")
+        ENDIF()
+    ENDFOREACH()
+ENDFUNCTION()
+
+FUNCTION(SharemindPackagingFailIfComponentsAlreadyHandled)
+    FOREACH(c IN LISTS ARGN)
+        LIST(FIND CPACK_COMPONENTS_ALL "${c}" index)
+        IF(NOT (index EQUAL -1))
+            MESSAGE(FATAL_ERROR
+                    "Component ${c} has already been added to packaging!")
+        ENDIF()
+        LIST(FIND SHAREMIND_PACKAGING_IGNORED_COMPONENTS "${c}" index)
+        IF(NOT (index EQUAL -1))
+            MESSAGE(FATAL_ERROR
+                "Component ${c} has already been set to be ignored by packaging!")
         ENDIF()
     ENDFOREACH()
 ENDFUNCTION()
@@ -193,6 +215,7 @@ FUNCTION(SharemindAddComponentPackage_ component)
     ENDIF()
 ENDFUNCTION()
 MACRO(SharemindAddComponentPackage component)
+    SharemindPackagingFailIfComponentsAlreadyHandled("${component}")
     CMAKE_PARSE_ARGUMENTS(SharemindAddComponentPackage_tmp_CPA
         "PARENT_SCOPE" "" "" ${ARGN})
     IF(SharemindAddComponentPackage_tmp_CPA_PARENT_SCOPE)
@@ -210,6 +233,9 @@ MACRO(SharemindAddComponentPackage component)
     ENDIF()
     UNSET(SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS)
 
+    # Mark component as enabled for CPACK:
+    SharemindListAppendUnique(CPACK_COMPONENTS_ALL "${component}")
+
     # CPACK_DEBIAN_PACKAGE_RELEASE is set by SharemindSetupPackaging
     # Currently component-specific versioning is not supported
     SET("${CMAKE_PROJECT_NAME}_DEB_${component}_PACKAGE_VERSION"
@@ -217,7 +243,42 @@ MACRO(SharemindAddComponentPackage component)
     )
 ENDMACRO()
 
+FUNCTION(SharemindPackagingIgnoreComponents)
+    FOREACH(c IN LISTS ARGN)
+        SharemindPackagingFailIfComponentsAlreadyHandled("${c}")
+        LIST(APPEND SHAREMIND_PACKAGING_IGNORED_COMPONENTS "${c}")
+    ENDFOREACH()
+    SET(SHAREMIND_PACKAGING_IGNORED_COMPONENTS
+        "${SHAREMIND_PACKAGING_IGNORED_COMPONENTS}" PARENT_SCOPE)
+ENDFUNCTION()
+
+FUNCTION(SharemindPackagingWarnOnUnpackagedComponents)
+    # Retrieve a list of all known components:
+    GET_CMAKE_PROPERTY(CS COMPONENTS)
+
+    # Remove all from CS all components included in CPACK_COMPONENTS_ALL, using
+    # foreach instead of just LIST(REMOVE_ITEM), because the latter would
+    # require CPACK_COMPONENTS_ALL to be non-empty:
+    FOREACH(C IN LISTS CPACK_COMPONENTS_ALL)
+        LIST(REMOVE_ITEM CS "${C}")
+    ENDFOREACH()
+
+    # Remove all from CS all components included in
+    # SHAREMIND_PACKAGING_IGNORED_COMPONENTS, using foreach instead of just
+    # LIST(REMOVE_ITEM), because the latter would require
+    # SHAREMIND_PACKAGING_IGNORED_COMPONENTS to be non-empty:
+    FOREACH(C IN LISTS SHAREMIND_PACKAGING_IGNORED_COMPONENTS)
+        LIST(REMOVE_ITEM CS "${C}")
+    ENDFOREACH()
+
+    # Warn about components not packaged or ignored:
+    FOREACH(C IN LISTS CS)
+        MESSAGE(WARNING "Component \"${C}\" not packaged and not ignored!")
+    ENDFOREACH()
+ENDFUNCTION()
+
 MACRO(SharemindPackagingFinalize)
+    SharemindPackagingWarnOnUnpackagedComponents()
     INCLUDE(CPack)
 ENDMACRO()
 
