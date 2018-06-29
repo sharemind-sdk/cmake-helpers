@@ -102,19 +102,17 @@ FUNCTION(SharemindPackageInstallEmptyDirectories)
     ENDFOREACH()
 ENDFUNCTION()
 
-FUNCTION(SharemindPackagingFailIfComponentsAlreadyHandled)
-    FOREACH(c IN LISTS ARGN)
-        LIST(FIND CPACK_COMPONENTS_ALL "${c}" index)
-        IF(NOT (index EQUAL -1))
-            MESSAGE(FATAL_ERROR
-                    "Component ${c} has already been added to packaging!")
-        ENDIF()
-        LIST(FIND SHAREMIND_PACKAGING_IGNORED_COMPONENTS "${c}" index)
-        IF(NOT (index EQUAL -1))
-            MESSAGE(FATAL_ERROR
-                "Component ${c} has already been set to be ignored by packaging!")
-        ENDIF()
-    ENDFOREACH()
+FUNCTION(SharemindPackagingFailIfComponentAlreadyHandled c)
+    LIST(FIND CPACK_COMPONENTS_ALL "${c}" index)
+    IF(NOT (index EQUAL -1))
+        MESSAGE(FATAL_ERROR
+                "Component ${c} has already been added to packaging!")
+    ENDIF()
+    LIST(FIND SHAREMIND_PACKAGING_IGNORED_COMPONENTS "${c}" index)
+    IF(NOT (index EQUAL -1))
+        MESSAGE(FATAL_ERROR
+            "Component ${c} has already been set to be ignored by packaging!")
+    ENDIF()
 ENDFUNCTION()
 
 FUNCTION(SharemindAddComponentPackage_ component)
@@ -215,7 +213,7 @@ FUNCTION(SharemindAddComponentPackage_ component)
     ENDIF()
 ENDFUNCTION()
 MACRO(SharemindAddComponentPackage component)
-    SharemindPackagingFailIfComponentsAlreadyHandled("${component}")
+    SharemindPackagingFailIfComponentAlreadyHandled("${component}")
     CMAKE_PARSE_ARGUMENTS(SharemindAddComponentPackage_tmp_CPA
         "PARENT_SCOPE" "" "" ${ARGN})
     IF(SharemindAddComponentPackage_tmp_CPA_PARENT_SCOPE)
@@ -245,7 +243,7 @@ ENDMACRO()
 
 FUNCTION(SharemindPackagingIgnoreComponents)
     FOREACH(c IN LISTS ARGN)
-        SharemindPackagingFailIfComponentsAlreadyHandled("${c}")
+        SharemindPackagingFailIfComponentAlreadyHandled("${c}")
         LIST(APPEND SHAREMIND_PACKAGING_IGNORED_COMPONENTS "${c}")
     ENDFOREACH()
     SET(SHAREMIND_PACKAGING_IGNORED_COMPONENTS
