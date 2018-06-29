@@ -23,6 +23,17 @@ SET(SharemindPolymorphism_INCLUDED TRUE)
 
 SET(SharemindPolymorphism_CURRENT_LEVEL 0)
 
+
+FUNCTION(SharemindCreateEvalFile code outFileName)
+    SET(level "${SharemindPolymorphism_CURRENT_LEVEL}")
+    MATH(EXPR next "${level} + 1")
+    SET(lvar "SharemindPolymorphism_CURRENT_LEVEL")
+    SET(fn "${CMAKE_CURRENT_BINARY_DIR}/SharemindPolymorphism_${level}.cmake")
+    FILE(WRITE "${fn}"
+         "SET(${lvar} \"${next}\")\n\n${code}\n\nSET(${lvar} \"${level}\")\n")
+    SET("${outFileName}" "${fn}" PARENT_SCOPE)
+ENDFUNCTION()
+
 FUNCTION(SharemindCall_ f)
     SET(args "")
     FOREACH(arg IN LISTS ARGN)
@@ -31,18 +42,14 @@ FUNCTION(SharemindCall_ f)
         SET(args "${args} \"${arg}\"")
     ENDFOREACH()
     STRING(STRIP "${args}" args)
-    SET(level "${SharemindPolymorphism_CURRENT_LEVEL}")
-    MATH(EXPR next "${level} + 1")
-    SET(lvar "SharemindPolymorphism_CURRENT_LEVEL")
-    FILE(WRITE
-         "${CMAKE_CURRENT_BINARY_DIR}/SharemindPolymorphism_${level}.cmake"
-         "SET(${lvar} \"${next}\")\n${f}(${args})\nSET(${lvar} \"${level}\")\n")
+    SharemindCreateEvalFile("${f}(${args})" outFileName)
+    SET(SharemindCall_tmp "${outFileName}" PARENT_SCOPE)
 ENDFUNCTION()
 
 MACRO(SharemindCall f)
     SharemindCall_("${f}" ${ARGN})
-    INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/SharemindPolymorphism_${SharemindPolymorphism_CURRENT_LEVEL}.cmake")
+    INCLUDE("${SharemindCall_tmp}")
+    UNSET(SharemindCall_tmp)
 ENDMACRO()
-
 
 ENDIF() # SharemindPolymorphism_INCLUDED
