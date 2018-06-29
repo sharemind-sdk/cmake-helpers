@@ -23,6 +23,7 @@ SET(SharemindPackaging_INCLUDED TRUE)
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Polymorphism.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
 
@@ -244,14 +245,31 @@ MACRO(SharemindAddComponentPackage component)
     UNSET(SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS)
 ENDMACRO()
 
-FUNCTION(SharemindPackagingIgnoreComponents)
-    FOREACH(c IN LISTS ARGN)
-        SharemindPackagingFailIfComponentAlreadyHandled("${c}")
-        LIST(APPEND SHAREMIND_PACKAGING_IGNORED_COMPONENTS "${c}")
-    ENDFOREACH()
-    SET(SHAREMIND_PACKAGING_IGNORED_COMPONENTS
-        "${SHAREMIND_PACKAGING_IGNORED_COMPONENTS}" PARENT_SCOPE)
+FUNCTION(SharemindPackagingIgnoreComponent_ component)
+    SET(scope "")
+    IF("${ARGC}" GREATER 1)
+        IF(NOT ("${ARGN}" STREQUAL "PARENT_SCOPE"))
+            MESSAGE(FATAL_ERROR "Invalid arguments given!")
+        ENDIF()
+        SET(scope " PARENT_SCOPE")
+    ENDIF()
+    SharemindPackagingFailIfComponentAlreadyHandled(${component})
+    SharemindListAppendUnique(SHAREMIND_PACKAGING_IGNORED_COMPONENTS
+        "${component}")
+    STRING(CONCAT out
+        "SET(SHAREMIND_PACKAGING_IGNORED_COMPONENTS \""
+        "${SHAREMIND_PACKAGING_IGNORED_COMPONENTS}"
+        "\"${scope})")
+    MESSAGE(STATUS "out: ${out}")
+    SET(SharemindPackagingIgnoreComponent_tmp "${out}" PARENT_SCOPE)
 ENDFUNCTION()
+MACRO(SharemindPackagingIgnoreComponent)
+    SharemindPackagingIgnoreComponent_(${ARGN})
+    SharemindCreateEvalFile("${SharemindPackagingIgnoreComponent_tmp}"
+                            SharemindPackagingIgnoreComponent_tmp)
+    INCLUDE("${SharemindPackagingIgnoreComponent_tmp}")
+    UNSET(SharemindPackagingIgnoreComponents_tmp)
+ENDMACRO()
 
 FUNCTION(SharemindPackagingWarnOnUnpackagedComponents)
     # Retrieve a list of all known components:
