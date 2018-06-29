@@ -260,7 +260,6 @@ FUNCTION(SharemindPackagingIgnoreComponent_ component)
         "SET(SHAREMIND_PACKAGING_IGNORED_COMPONENTS \""
         "${SHAREMIND_PACKAGING_IGNORED_COMPONENTS}"
         "\"${scope})")
-    MESSAGE(STATUS "out: ${out}")
     SET(SharemindPackagingIgnoreComponent_tmp "${out}" PARENT_SCOPE)
 ENDFUNCTION()
 MACRO(SharemindPackagingIgnoreComponent)
