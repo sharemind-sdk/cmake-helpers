@@ -207,6 +207,18 @@ FUNCTION(SharemindAddComponentPackage_ component)
                 "${V_PACKAGE_SECTION}" "${CPA_DEB_SECTION}")
         ENDIF()
     ENDFOREACH()
+
+    # Mark component as enabled for CPACK:
+    SharemindListAppendUnique(CPACK_COMPONENTS_ALL "${component}")
+    SharemindRegisteredSet(varRegistry CPACK_COMPONENTS_ALL
+                           "${CPACK_COMPONENTS_ALL}")
+
+    # CPACK_DEBIAN_PACKAGE_RELEASE is set by SharemindSetupPackaging
+    # Currently component-specific versioning is not supported
+    SharemindRegisteredSet(varRegistry
+        "${CMAKE_PROJECT_NAME}_DEB_${component}_PACKAGE_VERSION"
+        "${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}")
+
     SharemindElevateRegisteredVariables(${varRegistry})
     IF(NOT ("${CPA_OUTPUT_VAR_REGISTRY}" STREQUAL ""))
         SET("${CPA_OUTPUT_VAR_REGISTRY}" ${varRegistry} PARENT_SCOPE)
@@ -230,15 +242,6 @@ MACRO(SharemindAddComponentPackage component)
             ${SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS})
     ENDIF()
     UNSET(SharemindAddComponentPackage_tmp_CPA_UNPARSED_ARGUMENTS)
-
-    # Mark component as enabled for CPACK:
-    SharemindListAppendUnique(CPACK_COMPONENTS_ALL "${component}")
-
-    # CPACK_DEBIAN_PACKAGE_RELEASE is set by SharemindSetupPackaging
-    # Currently component-specific versioning is not supported
-    SET("${CMAKE_PROJECT_NAME}_DEB_${component}_PACKAGE_VERSION"
-        "${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}"
-    )
 ENDMACRO()
 
 FUNCTION(SharemindPackagingIgnoreComponents)
