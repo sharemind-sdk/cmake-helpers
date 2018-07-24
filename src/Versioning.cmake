@@ -48,13 +48,13 @@ FUNCTION(SharemindSetProjectVersion)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
-    # Handle and parse VERSION to list, use ${PROJECT_VERSION} as the default:
+    # Use ${PROJECT_VERSION} by default for VERSION:
     IF("${CPA_VERSION}" STREQUAL "")
         SET(CPA_VERSION "${PROJECT_VERSION}")
     ENDIF()
-    SharemindNumericVersionToList("${CPA_VERSION}" vl)
 
     # Extract version components and populate CPACK_PACKAGE_VERSION* variables:
+    SharemindNumericVersionToList("${CPA_VERSION}" vl)
     SharemindListExtractFromHead("${vl}" v1 v2 v3)
     SET(CPACK_PACKAGE_VERSION_MAJOR "${v1}" PARENT_SCOPE)
     SET(CPACK_PACKAGE_VERSION_MINOR "${v2}" PARENT_SCOPE)
