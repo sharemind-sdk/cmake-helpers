@@ -40,8 +40,8 @@ FUNCTION(SharemindNormalizeVersion)
     SharemindNewList(optsn)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
-    SharemindCheckRequiredArgument(CPA VERSION)
-    SharemindCheckRequiredArgument(CPA OUTPUT_VARIABLE)
+    SharemindCheckArgument(CPA VERSION REQUIRED NON_EMPTY)
+    SharemindCheckArgument(CPA OUTPUT_VARIABLE REQUIRED NON_EMPTY)
 
     # Check for valid VERSION argument:
     SharemindCheckNumericVersionSyntax("${CPA_VERSION}")
