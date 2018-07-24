@@ -27,12 +27,12 @@ FUNCTION(SharemindCheckRequiredArgument prefix argname)
     ENDIF()
 ENDFUNCTION()
 
-MACRO(SharemindCheckNoUnparsedArguments prefix)
+FUNCTION(SharemindCheckNoUnparsedArguments prefix)
     IF(NOT ("${${prefix}_UNPARSED_ARGUMENTS}" STREQUAL ""))
         MESSAGE(FATAL_ERROR
                 "Unrecognized arguments: ${${prefix}_UNPARSED_ARGUMENTS}")
     ENDIF()
-ENDMACRO()
+ENDFUNCTION()
 
 
 ENDIF() # SharemindArguments_INCLUDED
