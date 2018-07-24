@@ -27,7 +27,7 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindCheckNumericVersionSyntax v)
-    IF(NOT("${v}" MATCHES "^[0-9]+(\\.[0-9]+)*$"))
+    IF(NOT("${v}" MATCHES "^(0|[1-9][0-9]*)(\\.(0|[1-9][0-9]*))*$"))
         MESSAGE(FATAL_ERROR "Numeric version has invalid syntax: ${v}")
     ENDIF()
 ENDFUNCTION()
