@@ -57,9 +57,5 @@ FUNCTION(SharemindCheckArgument prefix argname)
     ENDIF()
 ENDFUNCTION()
 
-FUNCTION(SharemindCheckRequiredArgument prefix argname)
-    SharemindCheckArgument("${prefix}" "${argname}" REQUIRED)
-ENDFUNCTION()
-
 
 ENDIF() # SharemindArguments_INCLUDED
