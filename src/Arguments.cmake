@@ -28,7 +28,7 @@ FUNCTION(SharemindCheckRequiredArgument prefix argname)
 ENDFUNCTION()
 
 FUNCTION(SharemindCheckNoUnparsedArguments prefix)
-    IF(NOT ("${${prefix}_UNPARSED_ARGUMENTS}" STREQUAL ""))
+    IF(DEFINED "${prefix}_UNPARSED_ARGUMENTS")
         MESSAGE(FATAL_ERROR
                 "Unrecognized arguments: ${${prefix}_UNPARSED_ARGUMENTS}")
     ENDIF()
