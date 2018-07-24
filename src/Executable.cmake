@@ -24,6 +24,7 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/SplitDebug.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
 INCLUDE(CMakeParseArguments)
 
@@ -32,61 +33,62 @@ FUNCTION(SharemindAddExecutable name)
         MESSAGE(FATAL_ERROR "Empty name given!")
     ENDIF()
 
+    SharemindGenerateUniqueVariablePrefix(p)
     SET(flags NO_SPLITDEBUG)
     SET(opts1 OUTPUT_NAME VERSION COMPONENT SPLITDEBUG_COMPONENT)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
                       LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
     # Handle SOURCES:
-    IF("${CPA_SOURCES}" STREQUAL "")
+    IF("${${p}_SOURCES}" STREQUAL "")
         MESSAGE(FATAL_ERROR "No valid SOURCES given!")
     ENDIF()
 
-    SharemindListMaybeSortByFileSize("${CPA_SOURCES}" CPA_SOURCES)
-    ADD_EXECUTABLE("${name}" ${CPA_SOURCES})
+    SharemindListMaybeSortByFileSize("${${p}_SOURCES}" ${p}_SOURCES)
+    ADD_EXECUTABLE("${name}" ${${p}_SOURCES})
 
     # Handle OUTPUT_NAME:
-    IF(NOT ("${CPA_OUTPUT_NAME}" STREQUAL ""))
+    IF(NOT ("${${p}_OUTPUT_NAME}" STREQUAL ""))
         SET_TARGET_PROPERTIES("${name}" PROPERTIES
-                              OUTPUT_NAME "${CPA_OUTPUT_NAME}")
+                              OUTPUT_NAME "${${p}_OUTPUT_NAME}")
     ENDIF()
 
     # Handle VERSION:
-    IF(NOT ("${CPA_VERSION}" STREQUAL ""))
-        SharemindCheckNumericVersionSyntax("${CPA_VERSION}")
-        SET_TARGET_PROPERTIES("${name}" PROPERTIES VERSION "${CPA_VERSION}")
+    IF(NOT ("${${p}_VERSION}" STREQUAL ""))
+        SharemindCheckNumericVersionSyntax("${${p}_VERSION}")
+        SET_TARGET_PROPERTIES("${name}" PROPERTIES VERSION "${${p}_VERSION}")
     ENDIF()
 
-    SharemindListAppendUnique(CPA_LINK_FLAGS "-Wl,--as-needed"
-                                             "-Wl,--no-undefined"
-                                             "-Wl,--no-allow-shlib-undefined")
+    SharemindListAppendUnique(${p}_LINK_FLAGS "-Wl,--as-needed"
+                                              "-Wl,--no-undefined"
+                                              "-Wl,--no-allow-shlib-undefined")
 
     SharemindTargetSetCommonProperties("${name}"
-                                       "${CPA_INCLUDE_DIRECTORIES}"
-                                       "${CPA_COMPILE_DEFINITIONS}"
-                                       "${CPA_COMPILE_FLAGS}"
-                                       "${CPA_LINK_LIBRARIES}"
-                                       "${CPA_LINK_FLAGS}"
-                                       "${CPA_LEGACY_DEFINITIONS}")
+                                       "${${p}_INCLUDE_DIRECTORIES}"
+                                       "${${p}_COMPILE_DEFINITIONS}"
+                                       "${${p}_COMPILE_FLAGS}"
+                                       "${${p}_LINK_LIBRARIES}"
+                                       "${${p}_LINK_FLAGS}"
+                                       "${${p}_LEGACY_DEFINITIONS}")
 
     # Handle COMPONENT:
-    IF("${CPA_COMPONENT}" STREQUAL "")
-        SET(CPA_COMPONENT "bin")
+    IF("${${p}_COMPONENT}" STREQUAL "")
+        SET(${p}_COMPONENT "bin")
     ENDIF()
     INSTALL(TARGETS "${name}"
             RUNTIME DESTINATION "bin"
-            COMPONENT "${CPA_COMPONENT}")
+            COMPONENT "${${p}_COMPONENT}")
 
     # Handle split debug files:
-    IF(NOT "${CPA_NO_SPLITDEBUG}")
+    IF(NOT "${${p}_NO_SPLITDEBUG}")
         # Handle SPLITDEBUG_COMPONENT:
-        IF("${CPA_SPLITDEBUG_COMPONENT}" STREQUAL "")
-            SET(CPA_SPLITDEBUG_COMPONENT "debug")
+        IF("${${p}_SPLITDEBUG_COMPONENT}" STREQUAL "")
+            SET(${p}_SPLITDEBUG_COMPONENT "debug")
         ENDIF()
         SharemindExecutableAddSplitDebug("${name}"
-            COMPONENT "${CPA_SPLITDEBUG_COMPONENT}"
+            COMPONENT "${${p}_SPLITDEBUG_COMPONENT}"
         )
     ENDIF()
 ENDFUNCTION()

@@ -33,12 +33,13 @@ FUNCTION(SharemindSetupPackaging)
     SharemindCheckUndefined(CPACK_PACKAGE_VERSION_PATCH)
     SharemindCheckUndefined(CPACK_PACKAGE_VERSION)
 
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 VENDOR VENDOR_CONTACT
               DEB_VENDOR_VERSION DEB_VENDOR_PREFIX DEB_COMPRESSION)
     SET(optsn GENERATORS)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
     # Populate CPACK_PACKAGE_VERSION* variables from PROJECT_VERSION:
     SharemindNormalizeVersion(VERSION "${PROJECT_VERSION}"
@@ -59,34 +60,34 @@ FUNCTION(SharemindSetupPackaging)
     SET(SHAREMIND_PACKAGING_IGNORED_COMPONENTS PARENT_SCOPE)
 
     # Handle VENDOR:
-    SharemindSetToDefaultIfEmpty(CPA_VENDOR "Cybernetica AS")
-    SET(CPACK_PACKAGE_VENDOR "${CPA_VENDOR}" PARENT_SCOPE)
+    SharemindSetToDefaultIfEmpty("${p}_VENDOR" "Cybernetica AS")
+    SET(CPACK_PACKAGE_VENDOR "${${p}_VENDOR}" PARENT_SCOPE)
 
     # Handle VENDOR_CONTACT:
-    SharemindSetToDefaultIfEmpty(CPA_VENDOR_CONTACT
+    SharemindSetToDefaultIfEmpty("${p}_VENDOR_CONTACT"
         "Sharemind packaging <sharemind-packaging@cyber.ee>")
-    SET(CPACK_PACKAGE_CONTACT "${CPA_VENDOR_CONTACT}" PARENT_SCOPE)
+    SET(CPACK_PACKAGE_CONTACT "${${p}_VENDOR_CONTACT}" PARENT_SCOPE)
 
     # Handle GENERATORS:
-    SharemindSetToDefaultIfEmpty(CPA_GENERATORS "DEB")
-    LIST(REMOVE_DUPLICATES CPA_GENERATORS)
-    SET(CPACK_GENERATOR "${CPA_GENERATORS}" PARENT_SCOPE)
+    SharemindSetToDefaultIfEmpty("${p}_GENERATORS" "DEB")
+    LIST(REMOVE_DUPLICATES "${p}_GENERATORS")
+    SET(CPACK_GENERATOR "${${p}_GENERATORS}" PARENT_SCOPE)
 
     # Debian:
-    FOREACH(generator IN LISTS CPA_GENERATORS)
+    FOREACH(generator IN LISTS "${p}_GENERATORS")
         IF("${generator}" STREQUAL "DEB")
             # Handle DEB_VENDOR_PREFIX and DEB_VENDOR_VERSION:
-            SharemindSetToDefaultIfEmpty(CPA_DEB_VENDOR_PREFIX "cyber")
-            SharemindSetToDefaultIfEmpty(CPA_DEB_VENDOR_VERSION "1")
+            SharemindSetToDefaultIfEmpty("${p}_DEB_VENDOR_PREFIX" "cyber")
+            SharemindSetToDefaultIfEmpty("${p}_DEB_VENDOR_VERSION" "1")
             SET(s "$ENV{SHAREMIND_CPACK_DEB_VENDOR_VERSION_SUFFIX}")
             SET(CPACK_DEBIAN_PACKAGE_RELEASE
-                "${CPA_DEB_VENDOR_PREFIX}${CPA_DEB_VENDOR_VERSION}${s}"
+                "${${p}_DEB_VENDOR_PREFIX}${${p}_DEB_VENDOR_VERSION}${s}"
                 PARENT_SCOPE)
             UNSET(s)
 
             # Handle DEB_COMPRESSION:
-            SharemindSetToDefaultIfEmpty(CPA_DEB_COMPRESSION "xz")
-            SET(CPACK_DEBIAN_COMPRESSION_TYPE "${CPA_DEB_COMPRESSION}"
+            SharemindSetToDefaultIfEmpty("${p}_DEB_COMPRESSION" "xz")
+            SET(CPACK_DEBIAN_COMPRESSION_TYPE "${${p}_DEB_COMPRESSION}"
                 PARENT_SCOPE)
 
             SET(CPACK_DEB_COMPONENT_INSTALL "ON" PARENT_SCOPE)
@@ -96,17 +97,18 @@ FUNCTION(SharemindSetupPackaging)
 ENDFUNCTION()
 
 FUNCTION(SharemindPackageInstallEmptyDirectories)
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 COMPONENT)
     SET(optsn DIRECTORIES)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
-    FOREACH(dir IN LISTS CPA_DIRECTORIES)
+    FOREACH(dir IN LISTS "${p}_DIRECTORIES")
         GET_FILENAME_COMPONENT(name "${dir}" NAME)
         GET_FILENAME_COMPONENT(dir "${dir}" DIRECTORY)
         FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}")
-        IF("${CPA_COMPONENT}" STREQUAL "")
+        IF("${${p}_COMPONENT}" STREQUAL "")
             INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}"
                     DESTINATION "${dir}"
                     EXCLUDE_FROM_ALL)
@@ -114,7 +116,7 @@ FUNCTION(SharemindPackageInstallEmptyDirectories)
             INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/emptyDirs/${name}"
                     DESTINATION "${dir}"
                     EXCLUDE_FROM_ALL
-                    COMPONENT "${CPA_COMPONENT}")
+                    COMPONENT "${${p}_COMPONENT}")
         ENDIF()
     ENDFOREACH()
 ENDFUNCTION()
@@ -142,17 +144,18 @@ FUNCTION(SharemindAddComponentPackage_ component)
         MESSAGE(FATAL_ERROR "Component not found: ${component}")
     ENDIF()
 
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 NAME DESCRIPTION
               DEB_NAME DEB_DESCRIPTION DEB_SECTION OUTPUT_VAR_REGISTRY)
     SET(optsn DEB_DEPENDS DEB_EXTRA_CONTROL_FILES)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
-    SharemindSetToDefaultIfEmpty(CPA_NAME "${component}")
-    SharemindSetToDefaultIfEmpty(CPA_DESCRIPTION "${CPA_NAME} package")
+    SharemindSetToDefaultIfEmpty("${p}_NAME" "${component}")
+    SharemindSetToDefaultIfEmpty("${p}_DESCRIPTION" "${${p}_NAME} package")
 
-    FOREACH(e IN LISTS CPA_DEB_EXTRA_CONTROL_FILES)
+    FOREACH(e IN LISTS "${p}_DEB_EXTRA_CONTROL_FILES")
         IF(NOT (EXISTS "${e}"))
             MESSAGE(FATAL_ERROR
                     "\"${e}\" given in DEB_EXTRA_CONTROL_FILES does not exist!")
@@ -163,10 +166,10 @@ FUNCTION(SharemindAddComponentPackage_ component)
 
     FOREACH(generator IN LISTS CPACK_GENERATOR)
         IF("${generator}" STREQUAL "DEB")
-            SharemindCheckArgument(CPA DEB_SECTION REQUIRED NON_EMPTY)
-            SharemindSetToDefaultIfEmpty(CPA_DEB_NAME "${CPA_NAME}")
-            SharemindSetToDefaultIfEmpty(CPA_DEB_DESCRIPTION
-                                         "${CPA_DESCRIPTION}")
+            SharemindCheckArgument("${p}" "DEB_SECTION" REQUIRED NON_EMPTY)
+            SharemindSetToDefaultIfEmpty("${p}_DEB_NAME" "${${p}_NAME}")
+            SharemindSetToDefaultIfEmpty("${p}_DEB_DESCRIPTION"
+                                         "${${p}_DESCRIPTION}")
 
             STRING(TOUPPER "${component}" C)
             SET(V_PACKAGE_NAME "CPACK_DEBIAN_${C}_PACKAGE_NAME")
@@ -176,12 +179,12 @@ FUNCTION(SharemindAddComponentPackage_ component)
             SET(V_PACKAGE_EXTRA "CPACK_DEBIAN_${C}_PACKAGE_CONTROL_EXTRA")
 
             SharemindRegisteredSet(varRegistry
-                "${V_PACKAGE_NAME}" "${CPA_DEB_NAME}")
+                "${V_PACKAGE_NAME}" "${${p}_DEB_NAME}")
             SharemindRegisteredSet(varRegistry
-                "${V_PACKAGE_DESCRIPTION}" "${CPA_DEB_DESCRIPTION}")
-            IF(NOT ("${CPA_DEB_DEPENDS}" STREQUAL ""))
+                "${V_PACKAGE_DESCRIPTION}" "${${p}_DEB_DESCRIPTION}")
+            IF(NOT ("${${p}_DEB_DEPENDS}" STREQUAL ""))
                 SET(DEB_DEPENDS "")
-                FOREACH(d IN LISTS CPA_DEB_DEPENDS)
+                FOREACH(d IN LISTS "${p}_DEB_DEPENDS")
                     STRING(STRIP "${d}" d)
                     IF("${DEB_DEPENDS}" STREQUAL "")
                         IF("${d}" MATCHES "^\\|")
@@ -200,19 +203,21 @@ FUNCTION(SharemindAddComponentPackage_ component)
                         ENDIF()
                     ENDIF()
                 ENDFOREACH()
-                STRING(REPLACE ";|" " |" CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
-                STRING(REPLACE ";" ", " CPA_DEB_DEPENDS "${CPA_DEB_DEPENDS}")
+                STRING(REPLACE ";|" " |" "${p}_DEB_DEPENDS"
+                       "${${p}_DEB_DEPENDS}")
+                STRING(REPLACE ";" ", " "${p}_DEB_DEPENDS"
+                       "${${p}_DEB_DEPENDS}")
                 SharemindRegisteredSet(varRegistry
                     "${V_PACKAGE_DEPENDS}" "${DEB_DEPENDS}")
             ENDIF()
 
-            IF(NOT ("${CPA_DEB_EXTRA_CONTROL_FILES}" STREQUAL ""))
+            IF(NOT ("${${p}_DEB_EXTRA_CONTROL_FILES}" STREQUAL ""))
                 SharemindRegisteredSet(varRegistry
-                    "${V_PACKAGE_EXTRA}" "${CPA_DEB_EXTRA_CONTROL_FILES}")
+                    "${V_PACKAGE_EXTRA}" "${${p}_DEB_EXTRA_CONTROL_FILES}")
             ENDIF()
 
             SharemindRegisteredSet(varRegistry
-                "${V_PACKAGE_SECTION}" "${CPA_DEB_SECTION}")
+                "${V_PACKAGE_SECTION}" "${${p}_DEB_SECTION}")
         ENDIF()
     ENDFOREACH()
 
@@ -228,8 +233,8 @@ FUNCTION(SharemindAddComponentPackage_ component)
         "${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}")
 
     SharemindElevateRegisteredVariables(${varRegistry})
-    IF(NOT ("${CPA_OUTPUT_VAR_REGISTRY}" STREQUAL ""))
-        SET("${CPA_OUTPUT_VAR_REGISTRY}" ${varRegistry} PARENT_SCOPE)
+    IF(NOT ("${${p}_OUTPUT_VAR_REGISTRY}" STREQUAL ""))
+        SET("${${p}_OUTPUT_VAR_REGISTRY}" ${varRegistry} PARENT_SCOPE)
     ENDIF()
 ENDFUNCTION()
 MACRO(SharemindAddComponentPackage component)

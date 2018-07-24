@@ -34,41 +34,42 @@ FUNCTION(SharemindCheckNumericVersionSyntax v)
 ENDFUNCTION()
 
 FUNCTION(SharemindNormalizeVersion)
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 VERSION OUTPUT_VARIABLE NUM_COMPONENTS)
     SharemindNewList(optsn)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
-    SharemindCheckArgument(CPA VERSION REQUIRED NON_EMPTY)
-    SharemindCheckArgument(CPA OUTPUT_VARIABLE REQUIRED NON_EMPTY)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
+    SharemindCheckArgument("${p}" VERSION REQUIRED NON_EMPTY)
+    SharemindCheckArgument("${p}" OUTPUT_VARIABLE REQUIRED NON_EMPTY)
 
     # Check for valid VERSION argument:
-    SharemindCheckNumericVersionSyntax("${CPA_VERSION}")
+    SharemindCheckNumericVersionSyntax("${${p}_VERSION}")
 
     # Check for valid NUM_COMPONENTS argument:
-    IF(NOT ("${CPA_NUM_COMPONENTS}" MATCHES "^([1-9][0-9]*)?$"))
+    IF(NOT ("${${p}_NUM_COMPONENTS}" MATCHES "^([1-9][0-9]*)?$"))
         MESSAGE(FATAL_ERROR "Invalid NUM_COMPONENTS argument given!")
     ENDIF()
 
     # Use 3 by default for NUM_COMPONENTS:
-    IF("${CPA_NUM_COMPONENTS}" STREQUAL "")
-        SET(CPA_NUM_COMPONENTS "3")
+    IF("${${p}_NUM_COMPONENTS}" STREQUAL "")
+        SET(${p}_NUM_COMPONENTS "3")
     ENDIF()
 
     # Construct regular expression for normalization:
     SET(regex "^[0-9]+")
-    WHILE("${CPA_NUM_COMPONENTS}" GREATER "1")
+    WHILE("${${p}_NUM_COMPONENTS}" GREATER "1")
         STRING(APPEND regex ".[0-9]+")
-        MATH(EXPR CPA_NUM_COMPONENTS "${CPA_NUM_COMPONENTS} - 1")
+        MATH(EXPR "${p}_NUM_COMPONENTS" "${${p}_NUM_COMPONENTS} - 1")
     ENDWHILE()
 
     # Normalize version to at least three components:
-    WHILE(NOT ("${CPA_VERSION}" MATCHES "${regex}"))
-        SET(CPA_VERSION "${CPA_VERSION}.0")
+    WHILE(NOT ("${${p}_VERSION}" MATCHES "${regex}"))
+        SET("${p}_VERSION" "${${p}_VERSION}.0")
     ENDWHILE()
 
     # Write result to the OUTPUT_VARIABLE:
-    SET("${CPA_OUTPUT_VARIABLE}" "${CPA_VERSION}" PARENT_SCOPE)
+    SET("${${p}_OUTPUT_VARIABLE}" "${${p}_VERSION}" PARENT_SCOPE)
 ENDFUNCTION()
 
 FUNCTION(SharemindNumericVersionToList v out)

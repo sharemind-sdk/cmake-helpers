@@ -23,6 +23,7 @@ INCLUDE_GUARD()
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
 
 MACRO(SharemindEnableTests)
@@ -33,27 +34,28 @@ MACRO(SharemindEnableTests)
 ENDMACRO()
 
 FUNCTION(SharemindAddTest_ name)
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SharemindNewList(opts1)
     SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
                       LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
     # Handle SOURCES:
-    IF("${CPA_SOURCES}" STREQUAL "")
+    IF("${${p}_SOURCES}" STREQUAL "")
         MESSAGE(FATAL_ERROR "No valid SOURCES given!")
     ENDIF()
 
-    ADD_EXECUTABLE("testImpl_${name}" EXCLUDE_FROM_ALL ${CPA_SOURCES})
+    ADD_EXECUTABLE("testImpl_${name}" EXCLUDE_FROM_ALL ${${p}_SOURCES})
 
     SharemindTargetSetCommonProperties("testImpl_${name}"
-                                       "${CPA_INCLUDE_DIRECTORIES}"
-                                       "${CPA_COMPILE_DEFINITIONS}"
-                                       "${CPA_COMPILE_FLAGS}"
-                                       "${CPA_LINK_LIBRARIES}"
-                                       "${CPA_LINK_FLAGS}"
-                                       "${CPA_LEGACY_DEFINITIONS}")
+                                       "${${p}_INCLUDE_DIRECTORIES}"
+                                       "${${p}_COMPILE_DEFINITIONS}"
+                                       "${${p}_COMPILE_FLAGS}"
+                                       "${${p}_LINK_LIBRARIES}"
+                                       "${${p}_LINK_FLAGS}"
+                                       "${${p}_LEGACY_DEFINITIONS}")
 
     ADD_DEPENDENCIES("check" "testImpl_${name}")
     ADD_TEST(NAME "test_${name}" COMMAND "$<TARGET_FILE:testImpl_${name}>")
@@ -64,12 +66,13 @@ MACRO(SharemindAddTest)
 ENDMACRO()
 
 FUNCTION(SharemindAddSimpleTest_ sourceFileName)
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SharemindNewList(opts1)
     SET(optsn INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
               LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
     GET_FILENAME_COMPONENT(testName "${sourceFileName}" NAME_WE)
     SharemindAddTest_("${testName}" SOURCES "${sourceFileName}" ${ARGN})

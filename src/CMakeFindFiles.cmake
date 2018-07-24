@@ -24,83 +24,92 @@ INCLUDE_GUARD()
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/CMakeHelpersDir.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/ConfigureFile.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindUseCMakeFindFiles)
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 PROJECT_NAME COMPONENT)
     SharemindNewList(optsn)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
     # Handle PROJECT_NAME:
-    IF("${CPA_PROJECT_NAME}" STREQUAL "")
-        SET(CPA_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
+    IF("${${p}_PROJECT_NAME}" STREQUAL "")
+        SET(${p}_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
     ENDIF()
 
     # Handle COMPONENT:
-    IF("${CPA_COMPONENT}" STREQUAL "")
-        SET(CPA_COMPONENT "dev")
+    IF("${${p}_COMPONENT}" STREQUAL "")
+        SET(${p}_COMPONENT "dev")
     ENDIF()
 
     ADD_CUSTOM_TARGET(
-        "include_${CPA_PROJECT_NAME}_CMakeFindFiles_in_IDE" SOURCES
-        "${CMAKE_CURRENT_SOURCE_DIR}/${CPA_PROJECT_NAME}Config.cmake.in"
-        "${CMAKE_CURRENT_SOURCE_DIR}/${CPA_PROJECT_NAME}ConfigVersion.cmake.in")
+        "include_${${p}_PROJECT_NAME}_CMakeFindFiles_in_IDE" SOURCES
+        "${CMAKE_CURRENT_SOURCE_DIR}/${${p}_PROJECT_NAME}Config.cmake.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake.in")
     CONFIGURE_FILE(
-        "${CMAKE_CURRENT_SOURCE_DIR}/${CPA_PROJECT_NAME}Config.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}Config.cmake" @ONLY)
+        "${CMAKE_CURRENT_SOURCE_DIR}/${${p}_PROJECT_NAME}Config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake" @ONLY)
     CONFIGURE_FILE(
-        "${CMAKE_CURRENT_SOURCE_DIR}/${CPA_PROJECT_NAME}ConfigVersion.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}ConfigVersion.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
         @ONLY)
     INSTALL(FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}Config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}ConfigVersion.cmake"
-        DESTINATION "lib/${CPA_PROJECT_NAME}"
-        COMPONENT "${CPA_COMPONENT}")
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
+        DESTINATION "lib/${${p}_PROJECT_NAME}"
+        COMPONENT "${${p}_COMPONENT}")
 ENDFUNCTION()
 
 FUNCTION(SharemindCreateCMakeFindFiles)
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 PROJECT_NAME COMPONENT VERSION)
     SET(optsn INCLUDE_DIRS LIBRARIES DEFINITIONS)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
     # Handle PROJECT_NAME:
-    IF("${CPA_PROJECT_NAME}" STREQUAL "")
-        SET(CPA_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
+    IF("${${p}_PROJECT_NAME}" STREQUAL "")
+        SET(${p}_PROJECT_NAME "${CMAKE_PROJECT_NAME}")
     ENDIF()
 
     # Handle COMPONENT:
-    IF("${CPA_COMPONENT}" STREQUAL "")
-        SET(CPA_COMPONENT "dev")
+    IF("${${p}_COMPONENT}" STREQUAL "")
+        SET(${p}_COMPONENT "dev")
     ENDIF()
 
     # Handle VERSION:
-    IF("${CPA_VERSION}" STREQUAL "")
+    IF("${${p}_VERSION}" STREQUAL "")
         IF("${PROJECT_VERSION}" STREQUAL "")
             MESSAGE(FATAL_ERROR
                     "VERSION not given and variable PROJECT_VERSION is empty!")
         ENDIF()
-        SET(CPA_VERSION "${PROJECT_VERSION}")
+        SET(${p}_VERSION "${PROJECT_VERSION}")
     ENDIF()
 
-    SharemindNewUniqueList(CPA_INCLUDE_DIRS ${CPA_INCLUDE_DIRS})
-    SharemindNewUniqueList(CPA_LIBRARIES "-Wl,--as-needed" ${CPA_LIBRARIES})
-    SharemindNewUniqueList(CPA_DEFINITIONS ${CPA_DEFINITIONS})
+    SharemindNewUniqueList(${p}_INCLUDE_DIRS ${${p}_INCLUDE_DIRS})
+    SharemindNewUniqueList(${p}_LIBRARIES "-Wl,--as-needed" ${${p}_LIBRARIES})
+    SharemindNewUniqueList(${p}_DEFINITIONS ${${p}_DEFINITIONS})
 
-    CONFIGURE_FILE(
+    SharemindConfigureFile(
         "${SharemindCMakeHelpersDir}/FindFileConfig.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}Config.cmake" @ONLY)
-    CONFIGURE_FILE(
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake"
+        "@CPA_PROJECT_NAME@" "${p}_PROJECT_NAME"
+        "@CPA_INCLUDE_DIRS@" "${p}_INCLUDE_DIRS"
+        "@CPA_LIBRARIES@" "${p}_LIBRARIES"
+        "@CPA_DEFINITIONS@" "${p}_DEFINITIONS")
+    SharemindConfigureFile(
         "${SharemindCMakeHelpersDir}/FindFileConfigVersion.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}ConfigVersion.cmake"
-        @ONLY)
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
+        "@CPA_PROJECT_NAME@" "${p}_PROJECT_NAME"
+        "@CPA_VERSION@" "${p}_VERSION")
     INSTALL(FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}Config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/${CPA_PROJECT_NAME}ConfigVersion.cmake"
-        DESTINATION "lib/${CPA_PROJECT_NAME}"
-        COMPONENT "${CPA_COMPONENT}")
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
+        DESTINATION "lib/${${p}_PROJECT_NAME}"
+        COMPONENT "${${p}_COMPONENT}")
 ENDFUNCTION()

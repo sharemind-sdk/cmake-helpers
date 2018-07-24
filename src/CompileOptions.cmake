@@ -23,6 +23,7 @@ INCLUDE_GUARD()
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Polymorphism.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
 INCLUDE(CheckCCompilerFlag)
 INCLUDE(CheckCXXCompilerFlag)
@@ -142,34 +143,35 @@ SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
 )
 
 FUNCTION(SharemindSetCompileOptions compiler standard)
+    SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SharemindNewList(opts1)
     SET(optsn TARGETS FORCED_OPTIONS CHECK_OPTIONS DEFINITIONS COMPILE_FLAGS)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
 
     SharemindNewList(forced
         ${Sharemind${standard}ForcedCompileOptions}
-        ${CPA_FORCED_OPTIONS}
+        ${${p}_FORCED_OPTIONS}
     )
     SharemindCheckCompilerFlags("${compiler}" optional
         ${Sharemind${standard}CheckCompileOptions}
-        ${CPA_CHECK_OPTIONS}
-        ${CPA_COMPILE_FLAGS}
+        ${${p}_CHECK_OPTIONS}
+        ${${p}_COMPILE_FLAGS}
     )
     SharemindNewList(options ${forced} ${optional})
     SharemindNewList(definitions
         ${Sharemind${standard}ForcedCompileDefinitions}
-        ${CPA_DEFINITIONS}
+        ${${p}_DEFINITIONS}
     )
 
-    IF("${CPA_TARGETS}" STREQUAL "")
+    IF("${${p}_TARGETS}" STREQUAL "")
         ADD_COMPILE_OPTIONS(${options})
         FOREACH(definition IN LISTS definitions)
             ADD_DEFINITIONS("-D${definition}")
         ENDFOREACH()
     ELSE()
-        SET_TARGET_PROPERTIES(${CPA_TARGETS}
+        SET_TARGET_PROPERTIES(${${p}_TARGETS}
             PROPERTIES
                 COMPILE_OPTIONS "${options}"
                 COMPILE_DEFINITIONS "${definitions}"
