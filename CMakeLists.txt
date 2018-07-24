@@ -29,7 +29,6 @@ INCLUDE("${SRCDIR}/Packaging.cmake")
 INCLUDE("${SRCDIR}/UserConfig.cmake")
 INCLUDE("${SRCDIR}/Versioning.cmake")
 
-SharemindSetProjectVersion()
 SharemindIncludeUserConfigs()
 
 SET(SCRIPTDIR "cmake-scripts")

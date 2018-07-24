@@ -25,15 +25,32 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Polymorphism.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindSetupPackaging)
+    SharemindCheckUndefined(CPACK_PACKAGE_VERSION_MAJOR)
+    SharemindCheckUndefined(CPACK_PACKAGE_VERSION_MINOR)
+    SharemindCheckUndefined(CPACK_PACKAGE_VERSION_PATCH)
+    SharemindCheckUndefined(CPACK_PACKAGE_VERSION)
+
     SharemindNewList(flags)
     SET(opts1 VENDOR VENDOR_CONTACT
               DEB_VENDOR_VERSION DEB_VENDOR_PREFIX DEB_COMPRESSION)
     SET(optsn GENERATORS)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
+
+    # Populate CPACK_PACKAGE_VERSION* variables from PROJECT_VERSION:
+    SharemindNormalizeVersion(VERSION "${PROJECT_VERSION}"
+                              OUTPUT_VARIABLE vl)
+    SharemindNumericVersionToList("${vl}" vl)
+    SharemindListExtractFromHead("${vl}" v1 v2 v3)
+    SET(CPACK_PACKAGE_VERSION_MAJOR "${v1}" PARENT_SCOPE)
+    SET(CPACK_PACKAGE_VERSION_MINOR "${v2}" PARENT_SCOPE)
+    SET(CPACK_PACKAGE_VERSION_PATCH "${v3}" PARENT_SCOPE)
+    SET(CPACK_PACKAGE_VERSION "${v1}.${v2}.${v3}" PARENT_SCOPE)
+
 
     # Initialize an empty CPACK_COMPONENTS_ALL, so that by default, no packages
     # are generated.

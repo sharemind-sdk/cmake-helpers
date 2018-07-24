@@ -23,7 +23,6 @@ SET(SharemindVersioning_INCLUDED TRUE)
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindCheckNumericVersionSyntax v)
@@ -79,11 +78,6 @@ MACRO(SharemindNumericVersionToList v out)
 ENDMACRO()
 
 FUNCTION(SharemindSetProjectVersion)
-    SharemindCheckUndefined(CPACK_PACKAGE_VERSION_MAJOR)
-    SharemindCheckUndefined(CPACK_PACKAGE_VERSION_MINOR)
-    SharemindCheckUndefined(CPACK_PACKAGE_VERSION_PATCH)
-    SharemindCheckUndefined(CPACK_PACKAGE_VERSION)
-
     SET(flags NO_OUTPUT)
     SET(opts1 VERSION OUTPUT_VARIABLE)
     SharemindNewList(optsn)
@@ -102,14 +96,6 @@ FUNCTION(SharemindSetProjectVersion)
         SET(CPA_VERSION "${CPA_VERSION}.0")
     ENDWHILE()
 
-    # Extract version components and populate CPACK_PACKAGE_VERSION* variables:
-    SharemindNumericVersionToList("${CPA_VERSION}" vl)
-    SharemindListExtractFromHead("${vl}" v1 v2 v3)
-    SET(CPACK_PACKAGE_VERSION_MAJOR "${v1}" PARENT_SCOPE)
-    SET(CPACK_PACKAGE_VERSION_MINOR "${v2}" PARENT_SCOPE)
-    SET(CPACK_PACKAGE_VERSION_PATCH "${v3}" PARENT_SCOPE)
-    SET(CPACK_PACKAGE_VERSION "${v1}.${v2}.${v3}" PARENT_SCOPE)
-
     # Handle NO_OUTPUT:
     IF(NOT CPA_NO_OUTPUT)
         # Use "${CMAKE_PROJECT_NAME}_VERSION" by default for OUTPUT_VARIABLE:
@@ -121,6 +107,5 @@ FUNCTION(SharemindSetProjectVersion)
         SET("${CPA_OUTPUT_VARIABLE}" "${CPA_VERSION}" PARENT_SCOPE)
     ENDIF()
 ENDFUNCTION()
-
 
 ENDIF() # SharemindVersioning_INCLUDED
