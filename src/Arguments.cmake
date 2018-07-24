@@ -23,12 +23,6 @@ SET(SharemindArguments_INCLUDED TRUE)
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 
-FUNCTION(SharemindCheckRequiredArgument prefix argname)
-    IF("${${prefix}_${argname}}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "Required ${argname} argument not given!")
-    ENDIF()
-ENDFUNCTION()
-
 FUNCTION(SharemindCheckNoUnparsedArguments prefix)
     IF(DEFINED "${prefix}_UNPARSED_ARGUMENTS")
         MESSAGE(FATAL_ERROR
@@ -61,6 +55,10 @@ FUNCTION(SharemindCheckArgument prefix argname)
             MESSAGE(FATAL_ERROR "Argument(s) to ${argname} must not be empty!")
         ENDIF()
     ENDIF()
+ENDFUNCTION()
+
+FUNCTION(SharemindCheckRequiredArgument prefix argname)
+    SharemindCheckArgument("${prefix}" "${argname}" REQUIRED)
 ENDFUNCTION()
 
 
