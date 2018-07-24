@@ -35,6 +35,44 @@ FUNCTION(SharemindCheckNumericVersionSyntax v)
     ENDIF()
 ENDFUNCTION()
 
+FUNCTION(SharemindNormalizeVersion)
+    SharemindNewList(flags)
+    SET(opts1 VERSION OUTPUT_VARIABLE NUM_COMPONENTS)
+    SharemindNewList(optsn)
+    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments(CPA)
+    SharemindCheckRequiredArgument(CPA VERSION)
+    SharemindCheckRequiredArgument(CPA OUTPUT_VARIABLE)
+
+    # Check for valid VERSION argument:
+    SharemindCheckNumericVersionSyntax("${CPA_VERSION}")
+
+    # Check for valid NUM_COMPONENTS argument:
+    IF(NOT ("${CPA_NUM_COMPONENTS}" MATCHES "^([1-9][0-9]*)?$"))
+        MESSAGE(FATAL_ERROR "Invalid NUM_COMPONENTS argument given!")
+    ENDIF()
+
+    # Use 3 by default for NUM_COMPONENTS:
+    IF("${CPA_NUM_COMPONENTS}" STREQUAL "")
+        SET(CPA_NUM_COMPONENTS "3")
+    ENDIF()
+
+    # Construct regular expression for normalization:
+    SET(regex "^[0-9]+")
+    WHILE("${CPA_NUM_COMPONENTS}" GREATER "1")
+        STRING(APPEND regex ".[0-9]+")
+        MATH(EXPR CPA_NUM_COMPONENTS "${CPA_NUM_COMPONENTS} - 1")
+    ENDWHILE()
+
+    # Normalize version to at least three components:
+    WHILE(NOT ("${CPA_VERSION}" MATCHES "${regex}"))
+        SET(CPA_VERSION "${CPA_VERSION}.0")
+    ENDWHILE()
+
+    # Write result to the OUTPUT_VARIABLE:
+    SET("${CPA_OUTPUT_VARIABLE}" "${CPA_VERSION}" PARENT_SCOPE)
+ENDFUNCTION()
+
 MACRO(SharemindNumericVersionToList v out)
     SharemindCheckNumericVersionSyntax("${v}")
     STRING(REPLACE "." ";" "${out}" "${v}")
