@@ -21,11 +21,11 @@ IF(NOT DEFINED SharemindArguments_INCLUDED)
 SET(SharemindArguments_INCLUDED TRUE)
 
 
-MACRO(SharemindCheckRequiredArgument prefix argname)
+FUNCTION(SharemindCheckRequiredArgument prefix argname)
     IF("${${prefix}_${argname}}" STREQUAL "")
         MESSAGE(FATAL_ERROR "Required ${argname} argument not given!")
     ENDIF()
-ENDMACRO()
+ENDFUNCTION()
 
 MACRO(SharemindCheckNoUnparsedArguments prefix)
     IF(NOT ("${${prefix}_UNPARSED_ARGUMENTS}" STREQUAL ""))
