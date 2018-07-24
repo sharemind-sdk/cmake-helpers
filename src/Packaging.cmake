@@ -164,7 +164,7 @@ FUNCTION(SharemindAddComponentPackage_ component)
 
     FOREACH(generator IN LISTS CPACK_GENERATOR)
         IF("${generator}" STREQUAL "DEB")
-            SharemindCheckRequiredArgument(CPA DEB_SECTION)
+            SharemindCheckArgument(CPA DEB_SECTION REQUIRED NON_EMPTY)
             SharemindSetToDefaultIfEmpty(CPA_DEB_NAME "${CPA_NAME}")
             SharemindSetToDefaultIfEmpty(CPA_DEB_DESCRIPTION
                                          "${CPA_DESCRIPTION}")
