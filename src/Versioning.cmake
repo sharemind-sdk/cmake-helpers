@@ -53,6 +53,13 @@ FUNCTION(SharemindSetProjectVersion)
         SET(CPA_VERSION "${PROJECT_VERSION}")
     ENDIF()
 
+    SharemindCheckNumericVersionSyntax("${CPA_VERSION}")
+
+    # Normalize version to at least three components:
+    WHILE(NOT ("${CPA_VERSION}" MATCHES "^[0-9]+.[0-9]+(.[0-9]+)+$"))
+        SET(CPA_VERSION "${CPA_VERSION}.0")
+    ENDWHILE()
+
     # Extract version components and populate CPACK_PACKAGE_VERSION* variables:
     SharemindNumericVersionToList("${CPA_VERSION}" vl)
     SharemindListExtractFromHead("${vl}" v1 v2 v3)
@@ -67,10 +74,8 @@ FUNCTION(SharemindSetProjectVersion)
             SET(CPA_OUTPUT_VARIABLE "${CMAKE_PROJECT_NAME}_VERSION")
         ENDIF()
 
-        # Set ${OUTPUT_VARIABLE} in parent scope:
-        SET(v "${v1}.${v2}.${v3}")
-        SharemindCheckNumericVersionSyntax("${v}") # Assert
-        SET("${CPA_OUTPUT_VARIABLE}" "${v}" PARENT_SCOPE)
+        # Set ${OUTPUT_VARIABLE} in parent scope to the normalized version:
+        SET("${CPA_OUTPUT_VARIABLE}" "${CPA_VERSION}" PARENT_SCOPE)
     ENDIF()
 ENDFUNCTION()
 
