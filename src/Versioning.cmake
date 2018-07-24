@@ -48,22 +48,28 @@ FUNCTION(SharemindSetProjectVersion)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments(CPA)
 
-    # Handle VERSION:
+    # Handle and parse VERSION to list, use ${PROJECT_VERSION} as the default:
     IF("${CPA_VERSION}" STREQUAL "")
         SET(CPA_VERSION "${PROJECT_VERSION}")
     ENDIF()
     SharemindNumericVersionToList("${CPA_VERSION}" vl)
+
+    # Extract version components and populate CPACK_PACKAGE_VERSION* variables:
     SharemindListExtractFromHead("${vl}" v1 v2 v3)
     SET(CPACK_PACKAGE_VERSION_MAJOR "${v1}" PARENT_SCOPE)
     SET(CPACK_PACKAGE_VERSION_MINOR "${v2}" PARENT_SCOPE)
     SET(CPACK_PACKAGE_VERSION_PATCH "${v3}" PARENT_SCOPE)
 
+    # Handle NO_OUTPUT:
     IF(NOT CPA_NO_OUTPUT)
+        # Use "${CMAKE_PROJECT_NAME}_VERSION" by default for OUTPUT_VARIABLE:
         IF("${CPA_OUTPUT_VARIABLE}" STREQUAL "")
             SET(CPA_OUTPUT_VARIABLE "${CMAKE_PROJECT_NAME}_VERSION")
         ENDIF()
+
+        # Set ${OUTPUT_VARIABLE} in parent scope:
         SET(v "${v1}.${v2}.${v3}")
-        SharemindCheckNumericVersionSyntax("${v}")
+        SharemindCheckNumericVersionSyntax("${v}") # Assert
         SET("${CPA_OUTPUT_VARIABLE}" "${v}" PARENT_SCOPE)
     ENDIF()
 ENDFUNCTION()
