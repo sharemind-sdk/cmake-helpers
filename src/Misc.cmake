@@ -17,11 +17,9 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindMisc_INCLUDED)
-SET(SharemindMisc_INCLUDED TRUE)
+INCLUDE_GUARD()
+
 
 # Override default FindBoost options:
 SET(Boost_USE_STATIC_RUNTIME "OFF")
 SET(Boost_REALPATH "ON")
-
-ENDIF() # SharemindMisc_INCLUDED

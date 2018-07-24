@@ -17,11 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindCMakeHelpersDir_INCLUDED)
-SET(SharemindCMakeHelpersDir_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 SET(SharemindCMakeHelpersDir "${CMAKE_CURRENT_LIST_DIR}")
-
-
-ENDIF() # SharemindCMakeHelpersDir_INCLUDED

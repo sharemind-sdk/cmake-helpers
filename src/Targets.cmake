@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindTargets_INCLUDED)
-SET(SharemindTargets_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Definitions.cmake")
@@ -57,6 +56,3 @@ FUNCTION(SharemindTargetSetCommonProperties target includeDirs compileDefs
     SharemindTargetSetPropertyIfNonEmpty("${target}" LINK_LIBRARIES "${lls}")
     SharemindTargetSetPropertyIfNonEmpty("${target}" LINK_FLAGS "${lfs}")
 ENDFUNCTION()
-
-
-ENDIF() # SharemindTargets_INCLUDED

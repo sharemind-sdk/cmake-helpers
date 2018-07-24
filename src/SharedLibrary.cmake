@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindSharedLibrary_INCLUDED)
-SET(SharemindSharedLibrary_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -112,6 +111,3 @@ FUNCTION(SharemindAddSharedLibrary name)
                                       COMPONENT "${CPA_SPLITDEBUG_COMPONENT}")
     ENDIF()
 ENDFUNCTION()
-
-
-ENDIF() # SharemindSharedLibrary_INCLUDED

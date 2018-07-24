@@ -17,14 +17,10 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindUserConfig_INCLUDED)
-SET(SharemindUserConfig_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 MACRO(SharemindIncludeUserConfigs)
     INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/config.local" OPTIONAL)
     INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
 ENDMACRO()
-
-
-ENDIF() # SharemindUserConfig_INCLUDED

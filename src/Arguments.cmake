@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindArguments_INCLUDED)
-SET(SharemindArguments_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
@@ -56,6 +55,3 @@ FUNCTION(SharemindCheckArgument prefix argname)
         ENDIF()
     ENDIF()
 ENDFUNCTION()
-
-
-ENDIF() # SharemindArguments_INCLUDED

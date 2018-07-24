@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindExecutable_INCLUDED)
-SET(SharemindExecutable_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -91,6 +90,3 @@ FUNCTION(SharemindAddExecutable name)
         )
     ENDIF()
 ENDFUNCTION()
-
-
-ENDIF() # SharemindExecutable_INCLUDED

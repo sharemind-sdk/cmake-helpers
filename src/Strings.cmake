@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindStrings_INCLUDED)
-SET(SharemindStrings_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -63,5 +62,3 @@ FUNCTION(SharemindPadTo in pad to out)
     ENDWHILE()
     SET(${out} "${in}" PARENT_SCOPE)
 ENDFUNCTION()
-
-ENDIF() # SharemindStrings_INCLUDED

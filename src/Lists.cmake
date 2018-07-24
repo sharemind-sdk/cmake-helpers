@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindLists_INCLUDED)
-SET(SharemindLists_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Strings.cmake")
@@ -103,5 +102,3 @@ FUNCTION(SharemindListMaybeSortByFileSize list out)
         SET("${out}" "${list}" PARENT_SCOPE)
     ENDIF()
 ENDFUNCTION()
-
-ENDIF() # SharemindLists_INCLUDED

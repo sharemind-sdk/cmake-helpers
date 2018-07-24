@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindPackaging_INCLUDED)
-SET(SharemindPackaging_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -307,6 +306,3 @@ MACRO(SharemindPackagingFinalize)
     SharemindPackagingWarnOnUnpackagedComponents()
     INCLUDE(CPack)
 ENDMACRO()
-
-
-ENDIF() # SharemindPackaging_INCLUDED

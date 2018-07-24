@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindPolymorphism_INCLUDED)
-SET(SharemindPolymorphism_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 SET(SharemindPolymorphism_CURRENT_LEVEL 0)
@@ -51,5 +50,3 @@ MACRO(SharemindCall f)
     INCLUDE("${SharemindCall_tmp}")
     UNSET(SharemindCall_tmp)
 ENDMACRO()
-
-ENDIF() # SharemindPolymorphism_INCLUDED

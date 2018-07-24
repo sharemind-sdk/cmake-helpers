@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindVariable_INCLUDED)
-SET(SharemindVariable_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 MACRO(SharemindCheckUndefined vname)
@@ -44,6 +43,3 @@ MACRO(SharemindElevateRegisteredVariables)
         SET("${varName}" ${${varName}} PARENT_SCOPE)
     ENDFOREACH()
 ENDMACRO()
-
-
-ENDIF() # SharemindVariable_INCLUDED

@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindVersioning_INCLUDED)
-SET(SharemindVersioning_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -108,5 +107,3 @@ FUNCTION(SharemindSetProjectVersion)
         SET("${CPA_OUTPUT_VARIABLE}" "${CPA_VERSION}" PARENT_SCOPE)
     ENDIF()
 ENDFUNCTION()
-
-ENDIF() # SharemindVersioning_INCLUDED

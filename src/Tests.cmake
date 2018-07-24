@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindTests_INCLUDED)
-SET(SharemindTests_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -94,6 +93,3 @@ MACRO(SharemindAddSimpleTests)
     SharemindEnableTests()
     SharemindAddSimpleTests_(${ARGN})
 ENDMACRO()
-
-
-ENDIF() # SharemindLists_INCLUDED

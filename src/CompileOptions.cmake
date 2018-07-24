@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindCompileOptions_INCLUDED)
-SET(SharemindCompileOptions_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -183,6 +182,3 @@ ENDMACRO()
 MACRO(SharemindSetCxx11CompileOptions)
     SharemindSetCompileOptions("CXX" "Cxx11" ${ARGN})
 ENDMACRO()
-
-
-ENDIF() # SharemindCompileOptions_INCLUDED

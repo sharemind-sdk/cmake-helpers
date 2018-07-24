@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindSplitDebug_INCLUDED)
-SET(SharemindSplitDebug_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
@@ -68,6 +67,3 @@ ENDFUNCTION()
 FUNCTION(SharemindExecutableAddSplitDebug targetName)
     SharemindSplitDebug_("${targetName}" "bin" ${ARGN})
 ENDFUNCTION()
-
-
-ENDIF() # SharemindSplitDebug_INCLUDED

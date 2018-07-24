@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindDefinitions_INCLUDED)
-SET(SharemindDefinitions_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 MACRO(SharemindIsDefinition def out)
@@ -28,6 +27,3 @@ MACRO(SharemindIsDefinition def out)
         SET("${out}" FALSE)
     ENDIF()
 ENDMACRO()
-
-
-ENDIF() # SharemindDefinitions_INCLUDED

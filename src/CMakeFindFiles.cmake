@@ -17,8 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-IF(NOT DEFINED SharemindCMakeFindFiles_INCLUDED)
-SET(SharemindCMakeFindFiles_INCLUDED TRUE)
+INCLUDE_GUARD()
 
 
 # TODO: Use CMakePackageConfigHelpers instead?
@@ -105,5 +104,3 @@ FUNCTION(SharemindCreateCMakeFindFiles)
         DESTINATION "lib/${CPA_PROJECT_NAME}"
         COMPONENT "${CPA_COMPONENT}")
 ENDFUNCTION()
-
-ENDIF() # SharemindCMakeFindFiles_INCLUDED
