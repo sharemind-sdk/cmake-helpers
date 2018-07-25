@@ -79,6 +79,7 @@ FUNCTION(SharemindNumericVersionToList v out)
 ENDFUNCTION()
 
 FUNCTION(SharemindSetProjectVersion)
+    MESSAGE(WARNING "The SharemindSetProjectVersion() function is deprecated!")
     SET(flags NO_OUTPUT)
     SET(opts1 VERSION OUTPUT_VARIABLE)
     SharemindNewList(optsn)
