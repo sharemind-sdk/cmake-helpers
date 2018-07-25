@@ -77,35 +77,3 @@ FUNCTION(SharemindNumericVersionToList v out)
     STRING(REPLACE "." ";" v "${v}")
     SET("${out}" "${v}" PARENT_SCOPE)
 ENDFUNCTION()
-
-FUNCTION(SharemindSetProjectVersion)
-    MESSAGE(WARNING "The SharemindSetProjectVersion() function is deprecated!")
-    SET(flags NO_OUTPUT)
-    SET(opts1 VERSION OUTPUT_VARIABLE)
-    SharemindNewList(optsn)
-    CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
-    SharemindCheckNoUnparsedArguments(CPA)
-
-    # Use ${PROJECT_VERSION} by default for VERSION:
-    IF("${CPA_VERSION}" STREQUAL "")
-        SET(CPA_VERSION "${PROJECT_VERSION}")
-    ENDIF()
-
-    SharemindCheckNumericVersionSyntax("${CPA_VERSION}")
-
-    # Normalize version to at least three components:
-    WHILE(NOT ("${CPA_VERSION}" MATCHES "^[0-9]+.[0-9]+(.[0-9]+)+$"))
-        SET(CPA_VERSION "${CPA_VERSION}.0")
-    ENDWHILE()
-
-    # Handle NO_OUTPUT:
-    IF(NOT CPA_NO_OUTPUT)
-        # Use "${CMAKE_PROJECT_NAME}_VERSION" by default for OUTPUT_VARIABLE:
-        IF("${CPA_OUTPUT_VARIABLE}" STREQUAL "")
-            SET(CPA_OUTPUT_VARIABLE "${CMAKE_PROJECT_NAME}_VERSION")
-        ENDIF()
-
-        # Set ${OUTPUT_VARIABLE} in parent scope to the normalized version:
-        SET("${CPA_OUTPUT_VARIABLE}" "${CPA_VERSION}" PARENT_SCOPE)
-    ENDIF()
-ENDFUNCTION()
