@@ -230,7 +230,7 @@ FUNCTION(SharemindAddComponentPackage_ component)
     # Currently component-specific versioning is not supported
     SharemindRegisteredSet(varRegistry
         "${CMAKE_PROJECT_NAME}_DEB_${component}_PACKAGE_VERSION"
-        "${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}")
+        "${CPACK_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}")
 
     SharemindElevateRegisteredVariables(${varRegistry})
     IF(NOT ("${${p}_OUTPUT_VAR_REGISTRY}" STREQUAL ""))
