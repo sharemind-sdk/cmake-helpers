@@ -303,7 +303,7 @@ FUNCTION(SharemindPackagingWarnOnUnpackagedComponents)
 
     # Warn about components not packaged or ignored:
     FOREACH(C IN LISTS CS)
-        MESSAGE(WARNING "Component \"${C}\" not packaged and not ignored!")
+        MESSAGE(FATAL_ERROR "Component \"${C}\" not packaged and not ignored!")
     ENDFOREACH()
 ENDFUNCTION()
 
