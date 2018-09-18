@@ -90,6 +90,7 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-fstack-clash-protection"
     "-fstack-protector-strong"
     "-mcet"
+    "-pipe"
     "-Weverything"
     "-Wfloat-equal"
     "-Wformat"
