@@ -68,6 +68,14 @@ SharemindNewUniqueList(SharemindCxx11ForcedCompileOptions
     "-std=c++11"
     ${SharemindForcedCompileOptions}
 )
+SharemindNewUniqueList(SharemindCxx14ForcedCompileOptions
+    "-std=c++14"
+    ${SharemindForcedCompileOptions}
+)
+SharemindNewUniqueList(SharemindCxx17ForcedCompileOptions
+    "-std=c++17"
+    ${SharemindForcedCompileOptions}
+)
 
 SharemindNewUniqueList(SharemindForcedCompileDefinitions
     "__STDC_CONSTANT_MACROS"
@@ -81,6 +89,12 @@ SharemindNewUniqueList(SharemindC99ForcedCompileDefinitions
 )
 SharemindNewUniqueList(SharemindCxx11ForcedCompileDefinitions
     ${SharemindForcedCompileDefinitions}
+)
+SharemindNewUniqueList(SharemindCxx14ForcedCompileDefinitions
+    ${SharemindCxx11ForcedCompileDefinitions}
+)
+SharemindNewUniqueList(SharemindCxx17ForcedCompileDefinitions
+    ${SharemindCxx14ForcedCompileDefinitions}
 )
 
 SharemindNewUniqueList(SharemindCheckCompileOptions
@@ -141,6 +155,12 @@ SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
     "-Wsuggest-override"
     "-Wzero-as-null-pointer-constant"
     "-Werror=terminate"
+)
+SharemindNewUniqueList(SharemindCxx14CheckCompileOptions
+    ${SharemindCxx11CheckCompileOptions}
+)
+SharemindNewUniqueList(SharemindCxx17CheckCompileOptions
+    ${SharemindCxx14CheckCompileOptions}
 )
 
 FUNCTION(SharemindSetCompileOptions compiler standard)
