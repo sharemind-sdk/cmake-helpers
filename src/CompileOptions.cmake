@@ -61,19 +61,15 @@ SharemindNewUniqueList(SharemindForcedCompileOptions
     "$<$<STREQUAL:$<CONFIGURATION>,Release>:-fomit-frame-pointer>"
 )
 SharemindNewUniqueList(SharemindC99ForcedCompileOptions
-    "-std=c99"
     ${SharemindForcedCompileOptions}
 )
 SharemindNewUniqueList(SharemindCxx11ForcedCompileOptions
-    "-std=c++11"
     ${SharemindForcedCompileOptions}
 )
 SharemindNewUniqueList(SharemindCxx14ForcedCompileOptions
-    "-std=c++14"
     ${SharemindForcedCompileOptions}
 )
 SharemindNewUniqueList(SharemindCxx17ForcedCompileOptions
-    "-std=c++17"
     ${SharemindForcedCompileOptions}
 )
 
