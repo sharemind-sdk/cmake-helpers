@@ -21,7 +21,7 @@ INCLUDE_GUARD()
 
 
 FUNCTION(SharemindCompileSecrec)
-    # Usage: CompileSecrec(
+    # Usage: SharemindCompileSecrec(
     #  inFile ".sc input SecreC source file to be compiled"
     #  outFile ".sb output SecreC binary file"
     #  moduleIncludePaths "List of module search paths appended to compiler with -I flag"
@@ -30,10 +30,14 @@ FUNCTION(SharemindCompileSecrec)
     SET(opts1 inFile outFile)
     SET(optsn moduleIncludePaths extraDeps)
     CMAKE_PARSE_ARGUMENTS(CPA "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    # Find paths from CMAKE_PREFIX_PATH
+    FIND_PATH(SCC_PATH "bin/scc" PATHS "${CMAKE_PREFIX_PATH}")
+    FIND_PATH(STDLIB_PATH "lib/sharemind/stdlib" PATHS "${CMAKE_PREFIX_PATH}")
+    FIND_PATH(LIBRARY_PATH "lib/libscc.so" PATHS "${CMAKE_PREFIX_PATH}")
     # Find the file name from outfile to be used as custom_target name
-    string(REGEX MATCH [^\\/]+$ CUSTOM_TARGET_NAME ${CPA_inFile})
+    STRING(REGEX MATCH [^\\/]+$ CUSTOM_TARGET_NAME ${CPA_inFile})
     # Find the list of SecreC stdlib files so we can run rebuild when they change
-    FILE(GLOB secrec_stdlib_files "${CMAKE_INSTALL_PREFIX}/lib/sharemind/stdlib/*.sc")
+    FILE(GLOB secrec_stdlib_files "${STDLIB_PATH}/lib/sharemind/stdlib/*.sc")
     # Build a list of include dirs to be appended to scc compiler
     FOREACH (path ${CPA_moduleIncludePaths})
       LIST(APPEND includeArgs "-I")
@@ -44,9 +48,9 @@ FUNCTION(SharemindCompileSecrec)
       DEPENDS "${CPA_inFile}" "${secrec_stdlib_files}" "${CPA_extraDeps}"
       OUTPUT "${CPA_outFile}"
       COMMAND
-      "${CMAKE_COMMAND}" "-E" "env" "LD_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/lib"
-      "${CMAKE_INSTALL_PREFIX}/bin/scc"
-      "-I" "${CMAKE_INSTALL_PREFIX}/lib/sharemind/stdlib/" ${includeArgs}
+      "${CMAKE_COMMAND}" "-E" "env" "LD_LIBRARY_PATH=${LIBRARY_PATH}/lib"
+      "${SCC_PATH}/bin/scc"
+      "-I" "${STDLIB_PATH}/lib/sharemind/stdlib/" ${includeArgs}
       "-o" "${CPA_outFile}"
       "${CPA_inFile}")
     ADD_CUSTOM_TARGET("compile-secrec-${CUSTOM_TARGET_NAME}" ALL
