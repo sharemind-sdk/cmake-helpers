@@ -134,6 +134,38 @@ FUNCTION(SharemindPackagingFailIfComponentAlreadyHandled c)
     ENDIF()
 ENDFUNCTION()
 
+MACRO(SharemindPackagingDebAlternateHandling part)
+    SET(V_PACKAGE_${part} "CPACK_DEBIAN_${C}_PACKAGE_${part}")
+    IF(NOT ("${${p}_DEB_${part}}" STREQUAL ""))
+        SET(DEB_${part} "")
+        FOREACH(d IN LISTS "${p}_DEB_${part}")
+            STRING(STRIP "${d}" d)
+            IF("${DEB_${part}}" STREQUAL "")
+                IF("${d}" MATCHES "^\\|")
+                    STRING(SUBSTRING "${d}" 1 -1 d)
+                    STRING(STRIP "${d}" DEB_${part})
+                ELSE()
+                    SET(DEB_${part} "${d}")
+                ENDIF()
+            ELSE()
+                IF("${d}" MATCHES "^\\|")
+                    STRING(SUBSTRING "${d}" 1 -1 d)
+                    STRING(STRIP "${d}" d)
+                    SET(DEB_${part} "${DEB_${part}} | ${d}")
+                ELSE()
+                    SET(DEB_${part} "${DEB_${part}}, ${d}")
+                ENDIF()
+            ENDIF()
+        ENDFOREACH()
+        STRING(REPLACE ";|" " |" "${p}_DEB_${part}"
+            "${${p}_DEB_${part}}")
+        STRING(REPLACE ";" ", " "${p}_DEB_${part}"
+            "${${p}_DEB_${part}}")
+        SharemindRegisteredSet(varRegistry
+            "${V_PACKAGE_${part}}" "${DEB_${part}}")
+    ENDIF()
+ENDMACRO()
+
 FUNCTION(SharemindAddComponentPackage_ component)
     IF("${component}" STREQUAL "")
         MESSAGE(FATAL_ERROR "Invalid component name given: ${component}")
@@ -148,7 +180,18 @@ FUNCTION(SharemindAddComponentPackage_ component)
     SharemindNewList(flags)
     SET(opts1 NAME DESCRIPTION
               DEB_NAME DEB_DESCRIPTION DEB_SECTION OUTPUT_VAR_REGISTRY)
-    SET(optsn DEB_DEPENDS DEB_RECOMMENDS DEB_CONFLICTS DEB_EXTRA_CONTROL_FILES)
+    SET(optsn
+        DEB_BREAKS
+        DEB_CONFLICTS
+        DEB_DEPENDS
+        DEB_ENHANCES
+        DEB_EXTRA_CONTROL_FILES
+        DEB_PREDEPENDS
+        DEB_PROVIDES
+        DEB_RECOMMENDS
+        DEB_REPLACES
+        DEB_SOURCE
+        DEB_SUGGESTS)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
@@ -175,9 +218,6 @@ FUNCTION(SharemindAddComponentPackage_ component)
             SET(V_PACKAGE_NAME "CPACK_DEBIAN_${C}_PACKAGE_NAME")
             SET(V_PACKAGE_DESCRIPTION "CPACK_COMPONENT_${C}_DESCRIPTION")
             SET(V_PACKAGE_SECTION "CPACK_DEBIAN_${C}_PACKAGE_SECTION")
-            SET(V_PACKAGE_DEPENDS "CPACK_DEBIAN_${C}_PACKAGE_DEPENDS")
-            SET(V_PACKAGE_RECOMMENDS "CPACK_DEBIAN_${C}_PACKAGE_RECOMMENDS")
-            SET(V_PACKAGE_CONFLICTS "CPACK_DEBIAN_${C}_PACKAGE_CONFLICTS")
             SET(V_PACKAGE_EXTRA "CPACK_DEBIAN_${C}_PACKAGE_CONTROL_EXTRA")
 
             SharemindRegisteredSet(varRegistry
@@ -185,44 +225,16 @@ FUNCTION(SharemindAddComponentPackage_ component)
             SharemindRegisteredSet(varRegistry
                 "${V_PACKAGE_DESCRIPTION}" "${${p}_DEB_DESCRIPTION}")
 
-            IF(NOT ("${${p}_DEB_DEPENDS}" STREQUAL ""))
-                SET(DEB_DEPENDS "")
-                FOREACH(d IN LISTS "${p}_DEB_DEPENDS")
-                    STRING(STRIP "${d}" d)
-                    IF("${DEB_DEPENDS}" STREQUAL "")
-                        IF("${d}" MATCHES "^\\|")
-                            STRING(SUBSTRING "${d}" 1 -1 d)
-                            STRING(STRIP "${d}" DEB_DEPENDS)
-                        ELSE()
-                            SET(DEB_DEPENDS "${d}")
-                        ENDIF()
-                    ELSE()
-                        IF("${d}" MATCHES "^\\|")
-                            STRING(SUBSTRING "${d}" 1 -1 d)
-                            STRING(STRIP "${d}" d)
-                            SET(DEB_DEPENDS "${DEB_DEPENDS} | ${d}")
-                        ELSE()
-                            SET(DEB_DEPENDS "${DEB_DEPENDS}, ${d}")
-                        ENDIF()
-                    ENDIF()
-                ENDFOREACH()
-                STRING(REPLACE ";|" " |" "${p}_DEB_DEPENDS"
-                       "${${p}_DEB_DEPENDS}")
-                STRING(REPLACE ";" ", " "${p}_DEB_DEPENDS"
-                       "${${p}_DEB_DEPENDS}")
-                SharemindRegisteredSet(varRegistry
-                    "${V_PACKAGE_DEPENDS}" "${DEB_DEPENDS}")
-            ENDIF()
-
-            IF(NOT ("${${p}_DEB_RECOMMENDS}" STREQUAL ""))
-                SharemindRegisteredSet(varRegistry
-                    "${V_PACKAGE_RECOMMENDS}" "${${p}_DEB_RECOMMENDS}")
-            ENDIF()
-
-            IF(NOT ("${${p}_DEB_CONFLICTS}" STREQUAL ""))
-                SharemindRegisteredSet(varRegistry
-                    "${V_PACKAGE_CONFLICTS}" "${${p}_DEB_CONFLICTS}")
-            ENDIF()
+            SharemindPackagingDebAlternateHandling(BREAKS)
+            SharemindPackagingDebAlternateHandling(CONFLICTS)
+            SharemindPackagingDebAlternateHandling(DEPENDS)
+            SharemindPackagingDebAlternateHandling(ENHANCES)
+            SharemindPackagingDebAlternateHandling(PREDEPENDS)
+            SharemindPackagingDebAlternateHandling(PROVIDES)
+            SharemindPackagingDebAlternateHandling(RECOMMENDS)
+            SharemindPackagingDebAlternateHandling(REPLACES)
+            SharemindPackagingDebAlternateHandling(SOURCE)
+            SharemindPackagingDebAlternateHandling(SUGGESTS)
 
             IF(NOT ("${${p}_DEB_EXTRA_CONTROL_FILES}" STREQUAL ""))
                 SharemindRegisteredSet(varRegistry
