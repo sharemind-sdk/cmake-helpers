@@ -179,7 +179,8 @@ FUNCTION(SharemindAddComponentPackage_ component)
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 NAME DESCRIPTION
-              DEB_NAME DEB_DESCRIPTION DEB_SECTION OUTPUT_VAR_REGISTRY)
+              DEB_NAME DEB_DESCRIPTION DEB_SECTION DEB_SOURCE
+              OUTPUT_VAR_REGISTRY)
     SET(optsn
         DEB_BREAKS
         DEB_CONFLICTS
@@ -190,7 +191,6 @@ FUNCTION(SharemindAddComponentPackage_ component)
         DEB_PROVIDES
         DEB_RECOMMENDS
         DEB_REPLACES
-        DEB_SOURCE
         DEB_SUGGESTS)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
@@ -219,11 +219,14 @@ FUNCTION(SharemindAddComponentPackage_ component)
             SET(V_PACKAGE_DESCRIPTION "CPACK_COMPONENT_${C}_DESCRIPTION")
             SET(V_PACKAGE_SECTION "CPACK_DEBIAN_${C}_PACKAGE_SECTION")
             SET(V_PACKAGE_EXTRA "CPACK_DEBIAN_${C}_PACKAGE_CONTROL_EXTRA")
+            SET(V_PACKAGE_SOURCE "CPACK_DEBIAN_${C}_PACKAGE_SOURCE")
 
             SharemindRegisteredSet(varRegistry
                 "${V_PACKAGE_NAME}" "${${p}_DEB_NAME}")
             SharemindRegisteredSet(varRegistry
                 "${V_PACKAGE_DESCRIPTION}" "${${p}_DEB_DESCRIPTION}")
+            SharemindRegisteredSet(varRegistry
+                "${V_PACKAGE_SOURCE}" "${${p}_DEB_SOURCE}")
 
             SharemindPackagingDebAlternateHandling(BREAKS)
             SharemindPackagingDebAlternateHandling(CONFLICTS)
@@ -233,7 +236,6 @@ FUNCTION(SharemindAddComponentPackage_ component)
             SharemindPackagingDebAlternateHandling(PROVIDES)
             SharemindPackagingDebAlternateHandling(RECOMMENDS)
             SharemindPackagingDebAlternateHandling(REPLACES)
-            SharemindPackagingDebAlternateHandling(SOURCE)
             SharemindPackagingDebAlternateHandling(SUGGESTS)
 
             IF(NOT ("${${p}_DEB_EXTRA_CONTROL_FILES}" STREQUAL ""))
