@@ -148,7 +148,7 @@ FUNCTION(SharemindAddComponentPackage_ component)
     SharemindNewList(flags)
     SET(opts1 NAME DESCRIPTION
               DEB_NAME DEB_DESCRIPTION DEB_SECTION OUTPUT_VAR_REGISTRY)
-    SET(optsn DEB_DEPENDS DEB_EXTRA_CONTROL_FILES)
+    SET(optsn DEB_DEPENDS DEB_RECOMMENDS DEB_CONFLICTS DEB_EXTRA_CONTROL_FILES)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
@@ -176,12 +176,15 @@ FUNCTION(SharemindAddComponentPackage_ component)
             SET(V_PACKAGE_DESCRIPTION "CPACK_COMPONENT_${C}_DESCRIPTION")
             SET(V_PACKAGE_SECTION "CPACK_DEBIAN_${C}_PACKAGE_SECTION")
             SET(V_PACKAGE_DEPENDS "CPACK_DEBIAN_${C}_PACKAGE_DEPENDS")
+            SET(V_PACKAGE_RECOMMENDS "CPACK_DEBIAN_${C}_PACKAGE_RECOMMENDS")
+            SET(V_PACKAGE_CONFLICTS "CPACK_DEBIAN_${C}_PACKAGE_CONFLICTS")
             SET(V_PACKAGE_EXTRA "CPACK_DEBIAN_${C}_PACKAGE_CONTROL_EXTRA")
 
             SharemindRegisteredSet(varRegistry
                 "${V_PACKAGE_NAME}" "${${p}_DEB_NAME}")
             SharemindRegisteredSet(varRegistry
                 "${V_PACKAGE_DESCRIPTION}" "${${p}_DEB_DESCRIPTION}")
+
             IF(NOT ("${${p}_DEB_DEPENDS}" STREQUAL ""))
                 SET(DEB_DEPENDS "")
                 FOREACH(d IN LISTS "${p}_DEB_DEPENDS")
@@ -209,6 +212,16 @@ FUNCTION(SharemindAddComponentPackage_ component)
                        "${${p}_DEB_DEPENDS}")
                 SharemindRegisteredSet(varRegistry
                     "${V_PACKAGE_DEPENDS}" "${DEB_DEPENDS}")
+            ENDIF()
+
+            IF(NOT ("${${p}_DEB_RECOMMENDS}" STREQUAL ""))
+                SharemindRegisteredSet(varRegistry
+                    "${V_PACKAGE_RECOMMENDS}" "${${p}_DEB_RECOMMENDS}")
+            ENDIF()
+
+            IF(NOT ("${${p}_DEB_CONFLICTS}" STREQUAL ""))
+                SharemindRegisteredSet(varRegistry
+                    "${V_PACKAGE_CONFLICTS}" "${${p}_DEB_CONFLICTS}")
             ENDIF()
 
             IF(NOT ("${${p}_DEB_EXTRA_CONTROL_FILES}" STREQUAL ""))
