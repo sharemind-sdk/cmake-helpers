@@ -86,7 +86,11 @@ FUNCTION(SharemindSetupPackaging)
             UNSET(s)
 
             # Handle DEB_COMPRESSION:
-            SharemindSetToDefaultIfEmpty("${p}_DEB_COMPRESSION" "xz")
+            # Use xz compression when building release packages and gzip otherwise
+            IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+                SET("${p}_DEB_COMPRESSION" "xz")
+            ENDIF()
+            SharemindSetToDefaultIfEmpty("${p}_DEB_COMPRESSION" "gzip")
             SET(CPACK_DEBIAN_COMPRESSION_TYPE "${${p}_DEB_COMPRESSION}"
                 PARENT_SCOPE)
 
