@@ -183,7 +183,23 @@ FUNCTION(SharemindAddComponentPackage_ component)
 
     FOREACH(generator IN LISTS CPACK_GENERATOR)
         IF("${generator}" STREQUAL "DEB")
+            CMAKE_POLICY(PUSH)
+            CMAKE_POLICY(SET CMP0057 NEW)
+            # https://www.debian.org/doc/debian-policy/ch-archive.html#sections:
+            SET(validSections admin cli-mono comm database debug devel doc
+                              editors education electronics embedded fonts games
+                              gnome gnu-r gnustep graphics hamradio haskell
+                              httpd interpreters introspection java javascript
+                              kde kernel libdevel libs lisp localization mail
+                              math metapackages misc net news ocaml oldlibs
+                              otherosfs perl php python ruby rust science shells
+                              sound tasks tex text utils vcs video web x11 xfce
+                              zope)
             SharemindCheckArgument("${p}" "DEB_SECTION" REQUIRED NON_EMPTY)
+            IF(NOT("${${p}_DEB_SECTION}" IN_LIST validSections))
+                MESSAGE(FATAL_ERROR
+                        "Invalid DEB_SECTION given: ${${p}_DEB_SECTION}")
+            ENDIF()
             SharemindSetToDefaultIfEmpty("${p}_DEB_NAME" "${${p}_NAME}")
             SharemindSetToDefaultIfEmpty("${p}_DEB_DESCRIPTION"
                                          "${${p}_DESCRIPTION}")
@@ -203,8 +219,6 @@ FUNCTION(SharemindAddComponentPackage_ component)
                 "${V_PACKAGE_SOURCE}" "${${p}_DEB_SOURCE}")
 
             SET(fieldsWithAlternatives DEPENDS PREDEPENDS RECOMMENDS SUGGESTS)
-            CMAKE_POLICY(PUSH)
-            CMAKE_POLICY(SET CMP0057 NEW)
             FOREACH(field BREAKS CONFLICTS DEPENDS ENHANCES PREDEPENDS PROVIDES
                           RECOMMENDS REPLACES SUGGESTS)
                 SET(V_PACKAGE_${field} "CPACK_DEBIAN_${C}_PACKAGE_${field}")
