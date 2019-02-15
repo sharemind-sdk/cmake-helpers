@@ -34,7 +34,7 @@ FUNCTION(SharemindCompileSecrec)
     FIND_PATH(SCC_PATH "bin/scc" PATHS "${CMAKE_PREFIX_PATH}")
     FIND_PATH(STDLIB_PATH "lib/sharemind/stdlib" PATHS "${CMAKE_PREFIX_PATH}")
     FIND_PATH(LIBRARY_PATH "lib/libscc.so" PATHS "${CMAKE_PREFIX_PATH}")
-    # Find the file name from outfile to be used as custom_target name
+    # Find the file name from infile to be used as custom_target name
     STRING(REGEX MATCH [^\\/]+$ CUSTOM_TARGET_NAME ${CPA_inFile})
     # Find the list of SecreC stdlib files so we can run rebuild when they change
     FILE(GLOB secrec_stdlib_files "${STDLIB_PATH}/lib/sharemind/stdlib/*.sc")
