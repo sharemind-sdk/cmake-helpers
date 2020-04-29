@@ -115,11 +115,9 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
     "-Wpointer-arith"
     "-Werror=format"
     "-Werror=format-signedness"
-    "-Werror=register"
     "-Werror=alloca"
     "-Werror=gnu-zero-variadic-macro-arguments"
     "-Werror=null-pointer-arithmetic"
-    "-Werror=extra-semi"
     "-Werror=embedded-directive"
     "-Werror=unused-result"
 )
@@ -142,6 +140,8 @@ SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
     "-faligned-new"
     "-fdef-sized-delete"          # For Clang <  SVN 229597
     "-fdefine-sized-deallocation" # For Clang >= SVN 229597
+    "-Werror=register"
+    "-Werror=extra-semi"
     "-Wno-c++98-compat"
     "-Wno-c++98-compat-pedantic"
     "-Wno-covered-switch-default"
