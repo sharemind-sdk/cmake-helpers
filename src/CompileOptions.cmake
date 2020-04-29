@@ -123,7 +123,6 @@ SharemindNewUniqueList(SharemindCheckCompileOptions
 )
 SharemindNewUniqueList(SharemindC99CheckCompileOptions
     ${SharemindCheckCompileOptions}
-    "-Wabi"
     "-Wbad-function-cast"
     "-Wc++-compat"
     "-Wcast-qual"
