@@ -121,6 +121,7 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 NAMESPACE COMPONENT VERSION COMPATIBILITY PACKAGE_NAME)
+    SharemindNewList(optsn)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
