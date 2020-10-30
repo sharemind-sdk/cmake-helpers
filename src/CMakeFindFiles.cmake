@@ -19,13 +19,11 @@
 
 INCLUDE_GUARD()
 
-
-# TODO: Use CMakePackageConfigHelpers instead?
-
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/CMakeHelpersDir.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/ConfigureFile.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
+INCLUDE(CMakePackageConfigHelpers)
 INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindUseCMakeFindFiles)
@@ -111,5 +109,52 @@ FUNCTION(SharemindCreateCMakeFindFiles)
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
         DESTINATION "lib/${${p}_PROJECT_NAME}"
+        COMPONENT "${${p}_COMPONENT}")
+ENDFUNCTION()
+
+FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
+    SharemindGenerateUniqueVariablePrefix(p)
+    SharemindNewList(flags)
+    SET(opts1 NAMESPACE COMPONENT VERSION COMPATIBILITY)
+    CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
+    SharemindCheckNoUnparsedArguments("${p}")
+
+    # Handle NAMESPACE:
+    IF("${${p}_NAMESPACE}" STREQUAL "")
+        SET(${p}_NAMESPACE "Sharemind")
+    ENDIF()
+
+    # Handle COMPONENT:
+    IF("${${p}_COMPONENT}" STREQUAL "")
+        SET(${p}_COMPONENT "dev")
+    ENDIF()
+
+    # Handle VERSION:
+    IF("${${p}_VERSION}" STREQUAL "")
+        IF("${PROJECT_VERSION}" STREQUAL "")
+            MESSAGE(FATAL_ERROR
+                    "VERSION not given and variable PROJECT_VERSION is empty!")
+        ENDIF()
+        SET(${p}_VERSION "${PROJECT_VERSION}")
+    ENDIF()
+
+    # Handle COMPATIBILITY:
+    IF("${${p}_COMPATIBILITY}" STREQUAL "")
+        SET(${p}_COMPATIBILITY "SameMinorVersion")
+    ENDIF()
+
+    INSTALL(TARGETS "${target}" EXPORT "${target}Export" COMPONENT "dev")
+    INSTALL(EXPORT "${target}Export"
+        NAMESPACE "${${p}_NAMESPACE}::"
+        FILE "${${p}_NAMESPACE}${target}Config.cmake"
+        DESTINATION "lib/cmake/${${p}_NAMESPACE}${target}"
+        COMPONENT "dev")
+    WRITE_BASIC_PACKAGE_VERSION_FILE(
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_NAMESPACE}${target}ConfigVersion.cmake"
+        VERSION "${${p}_VERSION}"
+        COMPATIBILITY "${${p}_COMPATIBILITY}")
+    INSTALL(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_NAMESPACE}${target}ConfigVersion.cmake"
+        DESTINATION "lib/cmake/${${p}_NAMESPACE}${target}"
         COMPONENT "${${p}_COMPONENT}")
 ENDFUNCTION()
