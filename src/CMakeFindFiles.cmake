@@ -121,7 +121,7 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 NAMESPACE COMPONENT VERSION COMPATIBILITY PACKAGE_NAME)
-    SharemindNewList(optsn)
+    SET(optsn DEPENDENCIES)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
@@ -158,16 +158,29 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
         ENDIF()
     ENDIF()
 
+    # Handle DEPENDENCIES:
+    SET(${p}_PRELUDE "")
+    IF(NOT("${${p}_DEPENDENCIES}" STREQUAL ""))
+        SET(${p}_PRELUDE "INCLUDE(CMakeFindDependencyMacro)\n")
+        FOREACH(d IN LISTS "${p}_DEPENDENCIES")
+            SET(${p}_PRELUDE "${${p}_PRELUDE}FIND_DEPENDENCY(${d})\n")
+        ENDFOREACH()
+    ENDIF()
+
     INSTALL(EXPORT "${target}-Export"
         NAMESPACE "${${p}_NAMESPACE}::"
-        FILE "${${p}_PACKAGE_NAME}Config.cmake"
+        FILE "${${p}_PACKAGE_NAME}Targets.cmake"
         DESTINATION "lib/cmake/${${p}_PACKAGE_NAME}"
         COMPONENT "${${p}_COMPONENT}")
+    FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PACKAGE_NAME}Config.cmake"
+        "${${p}_PRELUDE}INCLUDE(\"\${CMAKE_CURRENT_LIST_DIR}/\
+${${p}_PACKAGE_NAME}Targets.cmake\")\n")
     WRITE_BASIC_PACKAGE_VERSION_FILE(
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PACKAGE_NAME}ConfigVersion.cmake"
         VERSION "${${p}_VERSION}"
         COMPATIBILITY "${${p}_COMPATIBILITY}")
     INSTALL(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PACKAGE_NAME}Config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PACKAGE_NAME}ConfigVersion.cmake"
         DESTINATION "lib/cmake/${${p}_PACKAGE_NAME}"
         COMPONENT "${${p}_COMPONENT}")
