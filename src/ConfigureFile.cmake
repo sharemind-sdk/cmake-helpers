@@ -20,8 +20,6 @@
 INCLUDE_GUARD()
 
 
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
-
 FUNCTION(SharemindConfigureFile inFile outFile)
     FILE(READ "${inFile}" contents)
     UNSET(needle)
