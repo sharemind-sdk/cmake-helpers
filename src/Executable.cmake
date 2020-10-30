@@ -78,6 +78,7 @@ FUNCTION(SharemindAddExecutable name)
         SET(${p}_COMPONENT "bin")
     ENDIF()
     INSTALL(TARGETS "${name}"
+            EXPORT "${name}-Export"
             RUNTIME DESTINATION "bin"
             COMPONENT "${${p}_COMPONENT}")
 

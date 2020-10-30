@@ -99,6 +99,7 @@ FUNCTION(SharemindAddSharedLibrary name)
     ENDIF()
 
     INSTALL(TARGETS "${name}"
+            EXPORT "${name}-Export"
             LIBRARY DESTINATION "lib"
             COMPONENT "${${p}_COMPONENT}")
 

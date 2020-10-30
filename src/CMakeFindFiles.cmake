@@ -156,8 +156,7 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
         ENDIF()
     ENDIF()
 
-    INSTALL(TARGETS "${target}" EXPORT "${target}Export" COMPONENT "dev")
-    INSTALL(EXPORT "${target}Export"
+    INSTALL(EXPORT "${target}-Export"
         NAMESPACE "${${p}_NAMESPACE}::"
         FILE "${${p}_PACKAGE_NAME}Config.cmake"
         DESTINATION "lib/cmake/${${p}_PACKAGE_NAME}"
