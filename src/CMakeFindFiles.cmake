@@ -161,7 +161,7 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
         NAMESPACE "${${p}_NAMESPACE}::"
         FILE "${${p}_PACKAGE_NAME}Config.cmake"
         DESTINATION "lib/cmake/${${p}_PACKAGE_NAME}"
-        COMPONENT "dev")
+        COMPONENT "${${p}_COMPONENT}")
     WRITE_BASIC_PACKAGE_VERSION_FILE(
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PACKAGE_NAME}ConfigVersion.cmake"
         VERSION "${${p}_VERSION}"
