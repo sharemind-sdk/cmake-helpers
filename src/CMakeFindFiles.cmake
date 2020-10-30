@@ -119,7 +119,7 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
 
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
-    SET(opts1 NAMESPACE COMPONENT VERSION COMPATIBILITY)
+    SET(opts1 NAMESPACE COMPONENT VERSION COMPATIBILITY PACKAGE_NAME)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
@@ -147,18 +147,27 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
         SET(${p}_COMPATIBILITY "SameMinorVersion")
     ENDIF()
 
+    # Handle PACKAGE_NAME:
+    IF("${${p}_PACKAGE_NAME}" STREQUAL "")
+        IF("${${p}_NAMESPACE}" STREQUAL "${target}")
+            SET(${p}_PACKAGE_NAME "${target}")
+        ELSE()
+            SET(${p}_PACKAGE_NAME "${${p}_NAMESPACE}${target}")
+        ENDIF()
+    ENDIF()
+
     INSTALL(TARGETS "${target}" EXPORT "${target}Export" COMPONENT "dev")
     INSTALL(EXPORT "${target}Export"
         NAMESPACE "${${p}_NAMESPACE}::"
-        FILE "${${p}_NAMESPACE}${target}Config.cmake"
-        DESTINATION "lib/cmake/${${p}_NAMESPACE}${target}"
+        FILE "${${p}_PACKAGE_NAME}Config.cmake"
+        DESTINATION "lib/cmake/${${p}_PACKAGE_NAME}"
         COMPONENT "dev")
     WRITE_BASIC_PACKAGE_VERSION_FILE(
-        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_NAMESPACE}${target}ConfigVersion.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PACKAGE_NAME}ConfigVersion.cmake"
         VERSION "${${p}_VERSION}"
         COMPATIBILITY "${${p}_COMPATIBILITY}")
     INSTALL(FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_NAMESPACE}${target}ConfigVersion.cmake"
-        DESTINATION "lib/cmake/${${p}_NAMESPACE}${target}"
+        "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PACKAGE_NAME}ConfigVersion.cmake"
+        DESTINATION "lib/cmake/${${p}_PACKAGE_NAME}"
         COMPONENT "${${p}_COMPONENT}")
 ENDFUNCTION()
