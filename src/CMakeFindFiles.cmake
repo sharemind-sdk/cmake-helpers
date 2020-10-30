@@ -113,6 +113,10 @@ FUNCTION(SharemindCreateCMakeFindFiles)
 ENDFUNCTION()
 
 FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
+    IF("${target}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "Emtpy target name given!")
+    ENDIF()
+
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SET(opts1 NAMESPACE COMPONENT VERSION COMPATIBILITY)
