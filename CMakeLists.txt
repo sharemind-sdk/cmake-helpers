@@ -32,7 +32,7 @@ INCLUDE("${SRCDIR}/Versioning.cmake")
 SharemindIncludeUserConfigs()
 
 SET(SCRIPTDIR "cmake-scripts")
-SET(SCRIPTROOT "lib/${CMAKE_PROJECT_NAME}/${SCRIPTDIR}")
+SET(SCRIPTROOT "lib/cmake/${CMAKE_PROJECT_NAME}/${SCRIPTDIR}")
 SET(FULL_SCRIPTROOT "${CMAKE_INSTALL_PREFIX}/${SCRIPTROOT}")
 
 FILE(GLOB_RECURSE SharemindCMakeHelpers_SOURCES
@@ -50,7 +50,7 @@ FOREACH(s IN LISTS SharemindCMakeHelpers_SOURCES)
     SharemindStringStripPrefix("${s}" "${SRCDIR}/" s)
     FILE(APPEND "${everything}" "INCLUDE(\"${FULL_SCRIPTROOT}/${s}\")\n")
 ENDFOREACH()
-INSTALL(FILES "${everything}" DESTINATION "lib/SharemindCMakeHelpers"
+INSTALL(FILES "${everything}" DESTINATION "lib/cmake/${CMAKE_PROJECT_NAME}"
         COMPONENT "dev")
 
 SharemindUseCMakeFindFiles()

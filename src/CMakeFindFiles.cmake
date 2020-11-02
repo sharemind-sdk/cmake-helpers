@@ -59,7 +59,7 @@ FUNCTION(SharemindUseCMakeFindFiles)
     INSTALL(FILES
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
-        DESTINATION "lib/${${p}_PROJECT_NAME}"
+        DESTINATION "lib/cmake/${${p}_PROJECT_NAME}"
         COMPONENT "${${p}_COMPONENT}")
 ENDFUNCTION()
 
@@ -109,7 +109,7 @@ FUNCTION(SharemindCreateCMakeFindFiles)
     INSTALL(FILES
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
-        DESTINATION "lib/${${p}_PROJECT_NAME}"
+        DESTINATION "lib/cmake/${${p}_PROJECT_NAME}"
         COMPONENT "${${p}_COMPONENT}")
 ENDFUNCTION()
 
