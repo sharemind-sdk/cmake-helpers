@@ -32,14 +32,25 @@ FUNCTION(SharemindAddInterfaceLibrary name)
 
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
-    SET(opts1 COMPONENT)
-    SharemindNewList(optsn)
+    SET(opts1 COMPONENT EXPOSE_FILES_TARGET)
+    SET(optsn EXPOSE_FILES)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
     # Handle COMPONENT:
     IF("${${p}_COMPONENT}" STREQUAL "")
        SET("${p}_COMPONENT" "lib")
+    ENDIF()
+
+    # Handle EXPOSE_FILES_TARGET:
+    IF("${${p}_EXPOSE_FILES_TARGET}" STREQUAL "")
+       SET("${p}_EXPOSE_FILES_TARGET" "${name}_EXPOSE_FILES")
+    ENDIF()
+
+    # Handle EXPOSE_FILES:
+    IF(NOT("${${p}_EXPOSE_FILES}" STREQUAL ""))
+        ADD_CUSTOM_TARGET("${${p}_EXPOSE_FILES_TARGET}"
+            SOURCES ${${p}_EXPOSE_FILES})
     ENDIF()
 
     ADD_LIBRARY("${name}" INTERFACE)
