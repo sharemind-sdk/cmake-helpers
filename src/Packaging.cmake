@@ -19,12 +19,12 @@
 
 INCLUDE_GUARD()
 
-
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Polymorphism.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
+
 
 FUNCTION(SharemindSetupPackaging)
     SharemindCheckUndefined(CPACK_PACKAGE_VERSION_MAJOR)

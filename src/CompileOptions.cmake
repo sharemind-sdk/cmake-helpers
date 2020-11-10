@@ -19,13 +19,13 @@
 
 INCLUDE_GUARD()
 
-
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Polymorphism.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CheckCCompilerFlag)
 INCLUDE(CheckCXXCompilerFlag)
+
 
 FUNCTION(SharemindCheckCompilerFlag compiler flag out)
     STRING(SUBSTRING "${flag}" 1 -1 FlagName)

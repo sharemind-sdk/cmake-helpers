@@ -25,6 +25,7 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakePackageConfigHelpers)
 
+
 FUNCTION(SharemindUseCMakeFindFiles)
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)

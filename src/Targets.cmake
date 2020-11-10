@@ -19,9 +19,9 @@
 
 INCLUDE_GUARD()
 
-
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Definitions.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
+
 
 MACRO(SharemindTargetSetPropertyIfNonEmpty target property value)
     IF(NOT("${value}" STREQUAL ""))

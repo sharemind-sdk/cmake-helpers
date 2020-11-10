@@ -19,10 +19,10 @@
 
 INCLUDE_GUARD()
 
-
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
+
 
 FUNCTION(SharemindCheckNumericVersionSyntax v)
     IF(NOT("${v}" MATCHES "^(0|[1-9][0-9]*)(\\.(0|[1-9][0-9]*))*$"))

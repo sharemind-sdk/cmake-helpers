@@ -19,10 +19,10 @@
 
 INCLUDE_GUARD()
 
-
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
+
 
 FUNCTION(SharemindSplitDebug_ targetName destination)
     SharemindGenerateUniqueVariablePrefix(p)
