@@ -62,9 +62,6 @@ SharemindNewUniqueList(SharemindForcedCompileOptions
 SharemindNewUniqueList(SharemindC99ForcedCompileOptions
     ${SharemindForcedCompileOptions}
 )
-SharemindNewUniqueList(SharemindCxx11ForcedCompileOptions
-    ${SharemindForcedCompileOptions}
-)
 SharemindNewUniqueList(SharemindCxx14ForcedCompileOptions
     ${SharemindForcedCompileOptions}
 )
@@ -82,11 +79,8 @@ SharemindNewUniqueList(SharemindForcedCompileDefinitions
 SharemindNewUniqueList(SharemindC99ForcedCompileDefinitions
     ${SharemindForcedCompileDefinitions}
 )
-SharemindNewUniqueList(SharemindCxx11ForcedCompileDefinitions
-    ${SharemindForcedCompileDefinitions}
-)
 SharemindNewUniqueList(SharemindCxx14ForcedCompileDefinitions
-    ${SharemindCxx11ForcedCompileDefinitions}
+    ${SharemindForcedCompileDefinitions}
 )
 SharemindNewUniqueList(SharemindCxx17ForcedCompileDefinitions
     ${SharemindCxx14ForcedCompileDefinitions}
@@ -133,7 +127,7 @@ SharemindNewUniqueList(SharemindC99CheckCompileOptions
     "-Wunused"
     "-Wunused-macros"
 )
-SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
+SharemindNewUniqueList(SharemindCxx14CheckCompileOptions
     ${SharemindCheckCompileOptions}
     "-faligned-new"
     "-fdef-sized-delete"          # For Clang <  SVN 229597
@@ -149,9 +143,6 @@ SharemindNewUniqueList(SharemindCxx11CheckCompileOptions
     "-Wsuggest-override"
     "-Wzero-as-null-pointer-constant"
     "-Werror=terminate"
-)
-SharemindNewUniqueList(SharemindCxx14CheckCompileOptions
-    ${SharemindCxx11CheckCompileOptions}
 )
 SharemindNewUniqueList(SharemindCxx17CheckCompileOptions
     ${SharemindCxx14CheckCompileOptions}
@@ -197,11 +188,6 @@ MACRO(SharemindSetC99CompileOptions)
     SET(CMAKE_C_STANDARD 99)
     SET(CMAKE_C_EXTENSIONS FALSE)
     SharemindSetCompileOptions("C" "C99" ${ARGN})
-ENDMACRO()
-MACRO(SharemindSetCxx11CompileOptions)
-    SET(CMAKE_CXX_STANDARD 11)
-    SET(CMAKE_CXX_EXTENSIONS FALSE)
-    SharemindSetCompileOptions("CXX" "Cxx11" ${ARGN})
 ENDMACRO()
 MACRO(SharemindSetCxx14CompileOptions)
     SET(CMAKE_CXX_STANDARD 14)
