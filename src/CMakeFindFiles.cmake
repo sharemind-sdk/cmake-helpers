@@ -20,7 +20,6 @@
 INCLUDE_GUARD()
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/CMakeHelpersDir.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/ConfigureFile.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
@@ -95,14 +94,14 @@ FUNCTION(SharemindCreateCMakeFindFiles)
     SharemindNewUniqueList(${p}_DEFINITIONS ${${p}_DEFINITIONS})
 
     SharemindConfigureFile(
-        "${SharemindCMakeHelpersDir}/FindFileConfig.cmake.in"
+        "${CMAKE_CURRENT_LIST_DIR}/FindFileConfig.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}Config.cmake"
         "@CPA_PROJECT_NAME@" "${p}_PROJECT_NAME"
         "@CPA_INCLUDE_DIRS@" "${p}_INCLUDE_DIRS"
         "@CPA_LIBRARIES@" "${p}_LIBRARIES"
         "@CPA_DEFINITIONS@" "${p}_DEFINITIONS")
     SharemindConfigureFile(
-        "${SharemindCMakeHelpersDir}/FindFileConfigVersion.cmake.in"
+        "${CMAKE_CURRENT_LIST_DIR}/FindFileConfigVersion.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/${${p}_PROJECT_NAME}ConfigVersion.cmake"
         "@CPA_PROJECT_NAME@" "${p}_PROJECT_NAME"
         "@CPA_VERSION@" "${p}_VERSION")
