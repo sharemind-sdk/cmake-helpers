@@ -24,7 +24,6 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/ConfigureFile.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CMakePackageConfigHelpers)
-INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindUseCMakeFindFiles)
     SharemindGenerateUniqueVariablePrefix(p)

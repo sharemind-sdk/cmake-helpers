@@ -26,7 +26,6 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/SplitDebug.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
-INCLUDE(CMakeParseArguments)
 
 FUNCTION(SharemindAddSharedLibrary name)
     IF("${name}" STREQUAL "")
