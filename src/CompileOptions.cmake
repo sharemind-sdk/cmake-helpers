@@ -198,9 +198,11 @@ FUNCTION(SharemindSetCompileOptions standard)
                 ${compiler}_STANDARD "${version}"
                 ${compiler}_EXTENSIONS FALSE
                 ${compiler}_REQUIRED TRUE
-                COMPILE_OPTIONS "${options}"
-                COMPILE_DEFINITIONS "${definitions}"
         )
+        FOREACH(target IN LISTS ${p}_TARGETS)
+            TARGET_COMPILE_OPTIONS("${target}" PRIVATE "${options}")
+            TARGET_COMPILE_DEFINITIONS("${target}" PRIVATE "${definitions}")
+        ENDFOREACH()
     ENDIF()
 ENDFUNCTION()
 MACRO(SharemindSetC99CompileOptions)
