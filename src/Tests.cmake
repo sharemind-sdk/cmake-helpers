@@ -46,9 +46,9 @@ FUNCTION(SharemindAddTest_ name)
         MESSAGE(FATAL_ERROR "No valid SOURCES given!")
     ENDIF()
 
-    ADD_EXECUTABLE("testImpl_${name}" EXCLUDE_FROM_ALL ${${p}_SOURCES})
+    ADD_EXECUTABLE("${name}" EXCLUDE_FROM_ALL ${${p}_SOURCES})
 
-    SharemindTargetSetCommonProperties("testImpl_${name}"
+    SharemindTargetSetCommonProperties("${name}"
                                        "${${p}_INCLUDE_DIRECTORIES}"
                                        "${${p}_COMPILE_DEFINITIONS}"
                                        "${${p}_COMPILE_FLAGS}"
@@ -56,8 +56,8 @@ FUNCTION(SharemindAddTest_ name)
                                        "${${p}_LINK_FLAGS}"
                                        "${${p}_LEGACY_DEFINITIONS}")
 
-    ADD_DEPENDENCIES("check" "testImpl_${name}")
-    ADD_TEST(NAME "test_${name}" COMMAND "$<TARGET_FILE:testImpl_${name}>")
+    ADD_DEPENDENCIES("check" "${name}")
+    ADD_TEST(NAME "${name}" COMMAND "$<TARGET_FILE:${name}>")
 ENDFUNCTION()
 MACRO(SharemindAddTest)
     SharemindEnableTests()
