@@ -20,6 +20,7 @@
 INCLUDE_GUARD()
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/CompileOptions.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 
@@ -34,7 +35,7 @@ ENDMACRO()
 FUNCTION(SharemindAddTest_ name)
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
-    SharemindNewList(opts1)
+    SET(opts1 STD)
     SET(optsn SOURCES)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
@@ -45,6 +46,10 @@ FUNCTION(SharemindAddTest_ name)
     ENDIF()
 
     ADD_EXECUTABLE("${name}" EXCLUDE_FROM_ALL ${${p}_SOURCES})
+
+    # Handle STD:
+    SharemindSetCompileOptionsFromStd("${name}" "${${p}_STD}")
+
     ADD_DEPENDENCIES("check" "${name}")
     ADD_TEST(NAME "${name}" COMMAND "$<TARGET_FILE:${name}>")
 ENDFUNCTION()

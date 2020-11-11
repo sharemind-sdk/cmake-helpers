@@ -20,6 +20,7 @@
 INCLUDE_GUARD()
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/CompileOptions.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/SplitDebug.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
@@ -33,7 +34,7 @@ FUNCTION(SharemindAddSharedLibrary name)
 
     SharemindGenerateUniqueVariablePrefix(p)
     SET(flags NO_SPLITDEBUG MODULE)
-    SET(opts1 OUTPUT_NAME VERSION SOVERSION COMPONENT SPLITDEBUG_COMPONENT)
+    SET(opts1 OUTPUT_NAME VERSION SOVERSION COMPONENT SPLITDEBUG_COMPONENT STD)
     SET(optsn SOURCES)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
@@ -85,6 +86,8 @@ FUNCTION(SharemindAddSharedLibrary name)
                               OUTPUT_NAME "${${p}_OUTPUT_NAME}")
     ENDIF()
 
+    # Handle STD:
+    SharemindSetCompileOptionsFromStd("${name}" "${${p}_STD}")
 
     # Handle COMPONENT:
     IF("${${p}_COMPONENT}" STREQUAL "")
