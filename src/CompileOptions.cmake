@@ -190,6 +190,8 @@ FUNCTION(SharemindSetCompileOptions standard)
     ELSE()
         SET_TARGET_PROPERTIES(${${p}_TARGETS}
             PROPERTIES
+                ${compiler}_STANDARD "${version}"
+                ${compiler}_EXTENSIONS FALSE
                 COMPILE_OPTIONS "${options}"
                 COMPILE_DEFINITIONS "${definitions}"
         )
