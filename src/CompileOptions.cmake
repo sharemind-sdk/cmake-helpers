@@ -184,9 +184,7 @@ FUNCTION(SharemindSetCompileOptions standard)
         SET(CMAKE_${compiler}_EXTENSIONS FALSE)
         SET(CMAKE_${compiler}_REQUIRED TRUE)
         ADD_COMPILE_OPTIONS(${options})
-        FOREACH(definition IN LISTS definitions)
-            ADD_DEFINITIONS("-D${definition}")
-        ENDFOREACH()
+        ADD_COMPILE_DEFINITIONS(${definitions})
     ELSE()
         SET_TARGET_PROPERTIES(${${p}_TARGETS}
             PROPERTIES
