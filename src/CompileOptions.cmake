@@ -50,6 +50,14 @@ FUNCTION(SharemindCheckCompilerFlags compiler out)
     SET("${out}" ${o} PARENT_SCOPE)
 ENDFUNCTION()
 
+FUNCTION(SharemindLanguageWrapCompileOptions language out)
+    SharemindNewList(r)
+    FOREACH(e IN LISTS ARGN)
+        LIST(APPEND r "$<$<COMPILE_LANGUAGE:${language}>:${e}>")
+    ENDFOREACH()
+    SET("${out}" "${r}" PARENT_SCOPE)
+ENDFUNCTION()
+
 SharemindNewUniqueList(SharemindForcedCompileOptions
     "-Wall"
     "-Wextra"
@@ -165,19 +173,18 @@ FUNCTION(SharemindSetCompileOptions standard)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
-    SharemindNewList(forced
+    SharemindNewUniqueList(optional
+        ${Sharemind${standard}CheckCompileOptions}
+        ${${p}_CHECK_OPTIONS})
+    SharemindCheckCompilerFlags("${compiler}" optional ${optional})
+    SharemindLanguageWrapCompileOptions("${compiler}" options
         ${Sharemind${standard}ForcedCompileOptions}
         ${${p}_FORCED_OPTIONS}
-    )
-    SharemindCheckCompilerFlags("${compiler}" optional
-        ${Sharemind${standard}CheckCompileOptions}
-        ${${p}_CHECK_OPTIONS}
-    )
-    SharemindNewList(options ${forced} ${optional})
-    SharemindNewList(definitions
+        ${optional})
+
+    SharemindLanguageWrapCompileOptions("${compiler}" definitions
         ${Sharemind${standard}ForcedCompileDefinitions}
-        ${${p}_DEFINITIONS}
-    )
+        ${${p}_DEFINITIONS})
 
     IF("${${p}_TARGETS}" STREQUAL "")
         SET(CMAKE_${compiler}_STANDARD "${version}")
