@@ -22,7 +22,6 @@ INCLUDE_GUARD()
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/SplitDebug.cmake")
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
 
@@ -35,8 +34,7 @@ FUNCTION(SharemindAddExecutable name)
     SharemindGenerateUniqueVariablePrefix(p)
     SET(flags NO_SPLITDEBUG)
     SET(opts1 OUTPUT_NAME VERSION COMPONENT SPLITDEBUG_COMPONENT)
-    SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
-                      LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
+    SET(optsn SOURCES)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
@@ -47,6 +45,12 @@ FUNCTION(SharemindAddExecutable name)
 
     SharemindListMaybeSortByFileSize("${${p}_SOURCES}" ${p}_SOURCES)
     ADD_EXECUTABLE("${name}" ${${p}_SOURCES})
+    TARGET_LINK_OPTIONS("${name}"
+        PRIVATE
+            "-Wl,--as-needed"
+            "-Wl,--no-undefined"
+            "-Wl,--no-allow-shlib-undefined"
+        )
 
     # Handle OUTPUT_NAME:
     IF(NOT ("${${p}_OUTPUT_NAME}" STREQUAL ""))
@@ -60,17 +64,6 @@ FUNCTION(SharemindAddExecutable name)
         SET_TARGET_PROPERTIES("${name}" PROPERTIES VERSION "${${p}_VERSION}")
     ENDIF()
 
-    SharemindListAppendUnique(${p}_LINK_FLAGS "-Wl,--as-needed"
-                                              "-Wl,--no-undefined"
-                                              "-Wl,--no-allow-shlib-undefined")
-
-    SharemindTargetSetCommonProperties("${name}"
-                                       "${${p}_INCLUDE_DIRECTORIES}"
-                                       "${${p}_COMPILE_DEFINITIONS}"
-                                       "${${p}_COMPILE_FLAGS}"
-                                       "${${p}_LINK_LIBRARIES}"
-                                       "${${p}_LINK_FLAGS}"
-                                       "${${p}_LEGACY_DEFINITIONS}")
 
     # Handle COMPONENT:
     IF("${${p}_COMPONENT}" STREQUAL "")
