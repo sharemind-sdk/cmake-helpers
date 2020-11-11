@@ -183,31 +183,23 @@ FUNCTION(SharemindSetCompileOptions standard)
     SharemindGenerateUniqueVariablePrefix(p)
     SET(flags NO_DEFAULTS)
     SharemindNewList(opts1)
-    SET(optsn TARGETS FORCED_OPTIONS CHECK_OPTIONS DEFINITIONS)
+    SET(optsn TARGETS)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
     # Handle NO_DEFAULTS:
     IF(${p}_NO_DEFAULTS)
-        SharemindNewList(forced)
-        SharemindNewList(optional)
+        SharemindNewList(options)
         SharemindNewList(definitions)
     ELSE()
-        SET(forced "${Sharemind${standard}ForcedCompileOptions}")
-        SET(optional "${Sharemind${standard}CheckCompileOptions}")
+        SharemindCheckCompilerFlags("${compiler}" options
+            ${Sharemind${standard}CheckCompileOptions})
+        LIST(INSERT options 0 "${Sharemind${standard}ForcedCompileOptions}")
         SET(definitions "${Sharemind${standard}ForcedCompileDefinitions}")
     ENDIF()
-
-    SharemindCheckCompilerFlags("${compiler}" optional
-        ${optional} ${${p}_CHECK_OPTIONS})
-    SharemindLanguageWrapCompileOptions("${compiler}" options
-        ${forced}
-        ${${p}_FORCED_OPTIONS}
-        ${optional})
-
+    SharemindLanguageWrapCompileOptions("${compiler}" options ${options})
     SharemindLanguageWrapCompileOptions("${compiler}" definitions
-        ${definitions}
-        ${${p}_DEFINITIONS})
+        ${definitions})
 
     IF("${${p}_TARGETS}" STREQUAL "")
         SET(CMAKE_${compiler}_STANDARD "${version}")
