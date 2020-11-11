@@ -183,6 +183,7 @@ FUNCTION(SharemindSetCompileOptions standard)
     IF("${${p}_TARGETS}" STREQUAL "")
         SET(CMAKE_${compiler}_STANDARD "${version}")
         SET(CMAKE_${compiler}_EXTENSIONS FALSE)
+        SET(CMAKE_${compiler}_REQUIRED TRUE)
         ADD_COMPILE_OPTIONS(${options})
         FOREACH(definition IN LISTS definitions)
             ADD_DEFINITIONS("-D${definition}")
@@ -192,6 +193,7 @@ FUNCTION(SharemindSetCompileOptions standard)
             PROPERTIES
                 ${compiler}_STANDARD "${version}"
                 ${compiler}_EXTENSIONS FALSE
+                ${compiler}_REQUIRED TRUE
                 COMPILE_OPTIONS "${options}"
                 COMPILE_DEFINITIONS "${definitions}"
         )
