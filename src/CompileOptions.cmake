@@ -161,7 +161,7 @@ FUNCTION(SharemindSetCompileOptions standard)
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SharemindNewList(opts1)
-    SET(optsn TARGETS FORCED_OPTIONS CHECK_OPTIONS DEFINITIONS COMPILE_FLAGS)
+    SET(optsn TARGETS FORCED_OPTIONS CHECK_OPTIONS DEFINITIONS)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
@@ -172,7 +172,6 @@ FUNCTION(SharemindSetCompileOptions standard)
     SharemindCheckCompilerFlags("${compiler}" optional
         ${Sharemind${standard}CheckCompileOptions}
         ${${p}_CHECK_OPTIONS}
-        ${${p}_COMPILE_FLAGS}
     )
     SharemindNewList(options ${forced} ${optional})
     SharemindNewList(definitions
