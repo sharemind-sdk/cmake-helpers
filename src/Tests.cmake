@@ -21,7 +21,6 @@ INCLUDE_GUARD()
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Targets.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 
 
@@ -36,8 +35,7 @@ FUNCTION(SharemindAddTest_ name)
     SharemindGenerateUniqueVariablePrefix(p)
     SharemindNewList(flags)
     SharemindNewList(opts1)
-    SET(optsn SOURCES INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_FLAGS
-                      LINK_LIBRARIES LINK_FLAGS LEGACY_DEFINITIONS)
+    SET(optsn SOURCES)
     CMAKE_PARSE_ARGUMENTS("${p}" "${flags}" "${opts1}" "${optsn}" ${ARGN})
     SharemindCheckNoUnparsedArguments("${p}")
 
@@ -47,15 +45,6 @@ FUNCTION(SharemindAddTest_ name)
     ENDIF()
 
     ADD_EXECUTABLE("${name}" EXCLUDE_FROM_ALL ${${p}_SOURCES})
-
-    SharemindTargetSetCommonProperties("${name}"
-                                       "${${p}_INCLUDE_DIRECTORIES}"
-                                       "${${p}_COMPILE_DEFINITIONS}"
-                                       "${${p}_COMPILE_FLAGS}"
-                                       "${${p}_LINK_LIBRARIES}"
-                                       "${${p}_LINK_FLAGS}"
-                                       "${${p}_LEGACY_DEFINITIONS}")
-
     ADD_DEPENDENCIES("check" "${name}")
     ADD_TEST(NAME "${name}" COMMAND "$<TARGET_FILE:${name}>")
 ENDFUNCTION()
