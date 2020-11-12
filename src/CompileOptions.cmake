@@ -170,7 +170,7 @@ SharemindNewUniqueList(SharemindCxx17CheckCompileOptions
     ${SharemindCxx14CheckCompileOptions}
 )
 
-FUNCTION(SharemindSetCompileOptions standard)
+FUNCTION(SharemindSetCompileOptions target standard)
     IF("${standard}" STREQUAL "C99")
         SET(compiler "C")
     ELSEIF("${standard}" MATCHES "^Cxx1[47]$")
@@ -195,24 +195,14 @@ FUNCTION(SharemindSetCompileOptions standard)
     SharemindLanguageWrapCompileOptions("${compiler}" definitions
         ${definitions})
 
-    IF("${${p}_TARGETS}" STREQUAL "")
-        SET(CMAKE_${compiler}_STANDARD "${version}")
-        SET(CMAKE_${compiler}_EXTENSIONS FALSE)
-        SET(CMAKE_${compiler}_REQUIRED TRUE)
-        ADD_COMPILE_OPTIONS(${options})
-        ADD_COMPILE_DEFINITIONS(${definitions})
-    ELSE()
-        SET_TARGET_PROPERTIES(${${p}_TARGETS}
-            PROPERTIES
-                ${compiler}_STANDARD "${version}"
-                ${compiler}_EXTENSIONS FALSE
-                ${compiler}_REQUIRED TRUE
-        )
-        FOREACH(target IN LISTS ${p}_TARGETS)
-            TARGET_COMPILE_OPTIONS("${target}" PRIVATE "${options}")
-            TARGET_COMPILE_DEFINITIONS("${target}" PRIVATE "${definitions}")
-        ENDFOREACH()
-    ENDIF()
+    SET_TARGET_PROPERTIES(${target}
+        PROPERTIES
+            ${compiler}_STANDARD "${version}"
+            ${compiler}_EXTENSIONS FALSE
+            ${compiler}_REQUIRED TRUE
+    )
+    TARGET_COMPILE_OPTIONS("${target}" PRIVATE "${options}")
+    TARGET_COMPILE_DEFINITIONS("${target}" PRIVATE "${definitions}")
 ENDFUNCTION()
 
 FUNCTION(SharemindSetCompileOptionsFromStd target std)
@@ -221,13 +211,13 @@ FUNCTION(SharemindSetCompileOptionsFromStd target std)
         CMAKE_POLICY(PUSH)
         CMAKE_POLICY(SET CMP0057 NEW)
         IF("C" IN_LIST enabledLangs)
-            SharemindSetCompileOptions("C99" TARGETS "${target}")
+            SharemindSetCompileOptions("${target}" "C99")
         ENDIF()
         IF("CXX" IN_LIST enabledLangs)
-            SharemindSetCompileOptions("Cxx14" TARGETS "${target}")
+            SharemindSetCompileOptions("${target}" "Cxx14")
         ENDIF()
         CMAKE_POLICY(POP)
     ELSEIF(NOT ("${std}" STREQUAL "SKIP"))
-        SharemindSetCompileOptions("${std}" TARGETS "${target}")
+        SharemindSetCompileOptions("${target}" "${std}")
     ENDIF()
 ENDFUNCTION()
