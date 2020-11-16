@@ -78,7 +78,6 @@ SharemindNewUniqueList(SharemindForcedCompileOptions
     "-O2"
     "$<$<NOT:$<STREQUAL:$<CONFIGURATION>,Release>>:-ggdb>"
     "$<$<NOT:$<STREQUAL:$<CONFIGURATION>,Release>>:-fno-omit-frame-pointer>"
-    "$<$<STREQUAL:$<CONFIGURATION>,Release>:-DNDEBUG>"
     "$<$<STREQUAL:$<CONFIGURATION>,Release>:-fomit-frame-pointer>"
 )
 SharemindNewUniqueList(SharemindC99ForcedCompileOptions
@@ -97,6 +96,7 @@ SharemindNewUniqueList(SharemindForcedCompileDefinitions
     "__STDC_LIMIT_MACROS"
     "_POSIX_C_SOURCE=200809L"
     "_XOPEN_SOURCE=700"
+    "$<$<STREQUAL:$<CONFIGURATION>,Release>:NDEBUG>"
 )
 SharemindNewUniqueList(SharemindC99ForcedCompileDefinitions
     ${SharemindForcedCompileDefinitions}
