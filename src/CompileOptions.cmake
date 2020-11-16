@@ -154,6 +154,7 @@ SharemindNewUniqueList(SharemindCxx14CheckCompileOptions
     "-faligned-new"
     "-fdef-sized-delete"          # For Clang <  SVN 229597
     "-fdefine-sized-deallocation" # For Clang >= SVN 229597
+    "-fstrong-eval-order"
     "-Werror=register"
     "-Werror=extra-semi"
     "-Wno-c++98-compat"
@@ -167,7 +168,21 @@ SharemindNewUniqueList(SharemindCxx14CheckCompileOptions
     "-Werror=terminate"
 )
 SharemindNewUniqueList(SharemindCxx17CheckCompileOptions
-    ${SharemindCxx14CheckCompileOptions}
+    ${SharemindCheckCompileOptions}
+    "-faligned-new"
+    "-fdef-sized-delete"          # For Clang <  SVN 229597
+    "-fdefine-sized-deallocation" # For Clang >= SVN 229597
+    "-Werror=register"
+    "-Werror=extra-semi"
+    "-Wno-c++98-compat"
+    "-Wno-c++98-compat-pedantic"
+    "-Wno-covered-switch-default"
+    "-Wno-gnu-case-range"
+    "-Wno-noexcept-type"
+    "-Wno-weak-vtables"
+    "-Wsuggest-override"
+    "-Wzero-as-null-pointer-constant"
+    "-Werror=terminate"
 )
 
 FUNCTION(SharemindSetDefaultCompileOptions target standard)
