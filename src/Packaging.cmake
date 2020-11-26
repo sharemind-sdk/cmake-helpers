@@ -21,7 +21,6 @@ INCLUDE_GUARD()
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Polymorphism.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Versioning.cmake")
 
@@ -321,9 +320,7 @@ FUNCTION(SharemindPackagingIgnoreComponent_ component)
 ENDFUNCTION()
 MACRO(SharemindPackagingIgnoreComponent)
     SharemindPackagingIgnoreComponent_(${ARGN})
-    SharemindCreateEvalFile("${SharemindPackagingIgnoreComponent_tmp}"
-                            SharemindPackagingIgnoreComponent_tmp)
-    INCLUDE("${SharemindPackagingIgnoreComponent_tmp}")
+    CMAKE_LANGUAGE(EVAL CODE "${SharemindPackagingIgnoreComponent_tmp}")
     UNSET(SharemindPackagingIgnoreComponents_tmp)
 ENDMACRO()
 

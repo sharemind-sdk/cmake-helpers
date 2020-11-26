@@ -21,7 +21,6 @@ INCLUDE_GUARD()
 
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Arguments.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Lists.cmake")
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Polymorphism.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 INCLUDE(CheckCCompilerFlag)
 INCLUDE(CheckCXXCompilerFlag)
@@ -30,8 +29,8 @@ INCLUDE(CheckCXXCompilerFlag)
 FUNCTION(SharemindCheckCompilerFlag compiler flag out)
     STRING(SUBSTRING "${flag}" 1 -1 FlagName)
     STRING(REPLACE "+" "--plus--" FlagName "${FlagName}")
-    SharemindCall("CHECK_${compiler}_COMPILER_FLAG" "${flag}"
-                  "has_flag_${FlagName}")
+    CMAKE_LANGUAGE(CALL "CHECK_${compiler}_COMPILER_FLAG"
+                   "${flag}" "has_flag_${FlagName}")
     IF("${has_flag_${FlagName}}")
         SET("${out}" TRUE PARENT_SCOPE)
     ELSE()

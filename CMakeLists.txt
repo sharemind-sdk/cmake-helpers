@@ -17,7 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.18)
 PROJECT(SharemindCMakeHelpers VERSION 1.6.0)
 
 INCLUDE(GNUInstallDirs)
