@@ -28,7 +28,10 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/Variables.cmake")
 MACRO(SharemindEnableTests)
     ENABLE_TESTING()
     IF(NOT (TARGET "check"))
-        ADD_CUSTOM_TARGET("check" COMMAND "${CMAKE_CTEST_COMMAND}")
+        ADD_CUSTOM_TARGET("check"
+            COMMAND "${CMAKE_CTEST_COMMAND}" --output-junit
+                "${CMAKE_CURRENT_BINARY_DIR}/make_check_junit.xml"
+            )
     ENDIF()
 ENDMACRO()
 
