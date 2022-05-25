@@ -30,7 +30,7 @@ MACRO(SharemindEnableTests)
     IF(NOT (TARGET "check"))
         ADD_CUSTOM_TARGET("check"
             COMMAND "${CMAKE_CTEST_COMMAND}" --output-junit
-                "${CMAKE_CURRENT_BINARY_DIR}/make_check_junit.xml"
+                "${CMAKE_CURRENT_BINARY_DIR}/rspec.xml"
             )
     ENDIF()
 ENDMACRO()
