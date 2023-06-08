@@ -145,7 +145,7 @@ FUNCTION(SharemindCreateCMakeFindFilesForTarget target)
 
     # Handle COMPATIBILITY:
     IF("${${p}_COMPATIBILITY}" STREQUAL "")
-        SET(${p}_COMPATIBILITY "SameMinorVersion")
+        SET(${p}_COMPATIBILITY "SameMajorVersion")
     ENDIF()
 
     # Handle PACKAGE_NAME:
