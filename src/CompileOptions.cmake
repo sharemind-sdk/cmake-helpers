@@ -155,7 +155,8 @@ SharemindNewUniqueList(SharemindCxx14CheckCompileOptions
     "-fdefine-sized-deallocation" # For Clang >= SVN 229597
     "-fstrong-eval-order"
     "-Werror=register"
-    "-Werror=extra-semi"
+# Commented out so that compilation is possible with the newest clang and g++ 
+#    "-Werror=extra-semi"
     "-Wno-c++98-compat"
     "-Wno-c++98-compat-pedantic"
     "-Wno-covered-switch-default"
