@@ -173,7 +173,8 @@ SharemindNewUniqueList(SharemindCxx17CheckCompileOptions
     "-fdef-sized-delete"          # For Clang <  SVN 229597
     "-fdefine-sized-deallocation" # For Clang >= SVN 229597
     "-Werror=register"
-    "-Werror=extra-semi"
+# Commented out so that compilation is possible with the newest clang and g++ 
+#    "-Werror=extra-semi"
     "-Wno-c++98-compat"
     "-Wno-c++98-compat-pedantic"
     "-Wno-covered-switch-default"
